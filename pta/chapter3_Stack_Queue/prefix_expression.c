@@ -1,6 +1,9 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+
+// 常规算法
+
 // 定义栈的最大容量
 #define maxsize 35
 
