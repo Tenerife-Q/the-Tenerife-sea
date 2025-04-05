@@ -42,6 +42,7 @@ int check_matching(const char *input) {
     matching['}'] = '{';
 
     for (int i = 0; input[i] != '\0'; i++) {
+        //处理左符号
         if (input[i] == '/') {
             if (input[i + 1] == '*') {
                 if (top >= MAX_STACK_SIZE - 1) {
@@ -57,7 +58,9 @@ int check_matching(const char *input) {
                 return -1;
             }
             stack[++top] = input[i];
-        } else if (input[i] == '*') {
+        } 
+        //处理右符号
+        else if (input[i] == '*') {
             if (input[i + 1] == '/') {
                 if (top == -1 || stack[top] != '<') {
                     printf("NO\n");
