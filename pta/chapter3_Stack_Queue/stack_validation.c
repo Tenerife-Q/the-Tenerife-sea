@@ -2,6 +2,8 @@
 #include <stdbool.h>
 #define MAX_N 1008
 
+// 复杂
+
 // 判断给定的出栈序列是否合法
 bool isValidOutput(int m, int n, int output[]) {
     // 用于模拟栈的数组，栈顶指针初始化为 -1 表示栈为空
