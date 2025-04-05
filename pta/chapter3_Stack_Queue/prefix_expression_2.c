@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+// 递归算法
+
 // 声明 exp 函数，用于计算前缀表达式的值
 double exp();
 
