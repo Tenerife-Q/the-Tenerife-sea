@@ -2,6 +2,8 @@
 #include<stdbool.h>
 #define MAX_N 1008
 
+// simple
+
 bool isValidOutput(int m, int n, int output[]) {
     int Stack[MAX_N];  // 模拟栈的数组
     int top = -1;      // 栈顶指针，初始为 -1 表示栈为空
