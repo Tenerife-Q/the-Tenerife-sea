@@ -1,3 +1,6 @@
+// double_hashing.c
+// 使用再哈希法实现开放地址哈希表
+
 #include <stdio.h>
 #include <stdlib.h>
 

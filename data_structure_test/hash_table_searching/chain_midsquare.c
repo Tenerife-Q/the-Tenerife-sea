@@ -1,3 +1,6 @@
+// chain_folding.c
+// 使用平方取中法实现链地址哈希表
+
 #include <stdio.h>
 #include <stdlib.h>
 

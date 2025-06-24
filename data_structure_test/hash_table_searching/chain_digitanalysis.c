@@ -1,3 +1,6 @@
+// chain_digitanalysis.c
+// 使用数字分析法实现链地址哈希表
+
 #include <stdio.h>
 #include <stdlib.h>
 

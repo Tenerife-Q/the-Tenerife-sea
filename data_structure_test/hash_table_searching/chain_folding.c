@@ -1,3 +1,6 @@
+// chain_folding.c
+// 使用折叠法实现链地址哈希表
+
 #include <stdio.h>
 #include <stdlib.h>
 

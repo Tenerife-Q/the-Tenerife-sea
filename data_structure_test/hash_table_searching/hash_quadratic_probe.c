@@ -1,3 +1,7 @@
+// hash_quadratic_probe.c
+// 使用二次探测法实现开放地址哈希表
+// 除留余数法
+
 #include <stdio.h>
 #include <stdlib.h>
 

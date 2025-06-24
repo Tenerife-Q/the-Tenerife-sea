@@ -1,14 +1,8 @@
-// hash_table_complete.c
-// 完整的哈希表实现，包括开放定址法和链地址法
-
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include <time.h>
 
 #define MAX_TABLE_SIZE 100
 #define PRIME 13
-#define RANDOM_A 0.618
 
 // 开放定址法的哈希表结构
 typedef struct {
@@ -22,51 +16,12 @@ typedef struct {
     int count;         
 } OpenHashTable;
 
-// 链地址法的链表节点结构
-typedef struct ListNode {
-    int key;                   
-    struct ListNode *next;     
-} ListNode;
-
-typedef struct {
-    ListNode **table;          
-    int tableSize;             
-    int count;                 
-} ChainHashTable;
-
-// 哈希函数实现
-int directAddressing(int key) {
-    return key;
-}
-
-int digitAnalysis(int key) {
-    return key % 10000;
-}
-
-int midSquare(int key) {
-    long long square = (long long)key * key;
-    return (square / 100) % 100;
-}
-
-int folding(int key) {
-    int sum = 0;
-    while (key > 0) {
-        sum += key % 1000;
-        key /= 1000;
-    }
-    return sum;
-}
-
+// 除留余数法哈希函数
 int divisionMethod(int key) {
     return key % PRIME;
 }
 
-int multiplicationMethod(int key) {
-    double product = key * RANDOM_A;
-    return (int)(MAX_TABLE_SIZE * (product - (int)product));
-}
-
-// 初始化函数
+// 初始化开放定址法哈希表
 OpenHashTable* initOpenHashTable(int size) {
     OpenHashTable *hashTable = (OpenHashTable*)malloc(sizeof(OpenHashTable));
     hashTable->table = (HashNode*)malloc(size * sizeof(HashNode));
@@ -79,19 +34,7 @@ OpenHashTable* initOpenHashTable(int size) {
     return hashTable;
 }
 
-ChainHashTable* initChainHashTable(int size) {
-    ChainHashTable *hashTable = (ChainHashTable*)malloc(sizeof(ChainHashTable));
-    hashTable->table = (ListNode**)malloc(size * sizeof(ListNode*));
-    hashTable->tableSize = size;
-    hashTable->count = 0;
-    
-    for (int i = 0; i < size; i++) {
-        hashTable->table[i] = NULL;
-    }
-    return hashTable;
-}
-
-// 冲突处理方法实现
+// 线性探测插入
 int linearProbingInsert(OpenHashTable *hashTable, int key, int (*hashFunc)(int)) {
     if (hashTable->count >= hashTable->tableSize) {
         printf("哈希表已满！\n");
@@ -115,6 +58,7 @@ int linearProbingInsert(OpenHashTable *hashTable, int key, int (*hashFunc)(int))
     return index;
 }
 
+// 线性探测查找
 int linearProbingSearch(OpenHashTable *hashTable, int key, int (*hashFunc)(int)) {
     int index = hashFunc(key) % hashTable->tableSize;
     int originalIndex = index;
@@ -130,26 +74,60 @@ int linearProbingSearch(OpenHashTable *hashTable, int key, int (*hashFunc)(int))
     return -1;
 }
 
+// 线性探测删除
+int linearProbingDelete(OpenHashTable *hashTable, int key, int (*hashFunc)(int)) {
+    int index = linearProbingSearch(hashTable, key, hashFunc);
+    if (index != -1) {
+        hashTable->table[index].status = 2; // 标记为已删除
+        hashTable->count--;
+        return index;
+    }
+    return -1;
+}
+
+// 显示开放定址法哈希表
+void displayOpenHashTable(OpenHashTable *hashTable) {
+    printf("\n开放定址法哈希表内容：\n");
+    for (int i = 0; i < hashTable->tableSize; i++) {
+        if (hashTable->table[i].status == 1) {
+            printf("位置 %d: %d\n", i, hashTable->table[i].key);
+        } else if (hashTable->table[i].status == 2) {
+            printf("位置 %d: 删除标记\n", i);
+        } else {
+            printf("位置 %d: 空闲\n", i);
+        }
+    }
+}
+
+// 释放开放定址法哈希表内存
+void freeOpenHashTable(OpenHashTable *hashTable) {
+    free(hashTable->table);
+    free(hashTable);
+}
+
 // 主函数 - 测试示例
 int main() {
-    printf("=== 哈希表测试程序 ===\n\n");
+    printf("=== 开放定址法哈希表测试程序 ===\n\n");
     
     // 创建并测试开放定址法哈希表
-    OpenHashTable *table = initOpenHashTable(10);
+    OpenHashTable *openTable = initOpenHashTable(10);
     
     // 插入测试数据
     int testKeys[] = {15, 25, 35, 45, 55};
-    printf("插入测试：\n");
+    printf("开放定址法插入测试：\n");
     for(int i = 0; i < 5; i++) {
-        int pos = linearProbingInsert(table, testKeys[i], divisionMethod);
+        int pos = linearProbingInsert(openTable, testKeys[i], divisionMethod);
         printf("插入 %d 到位置 %d\n", testKeys[i], pos);
     }
     
+    // 显示开放定址法哈希表
+    displayOpenHashTable(openTable);
+    
     // 查找测试
-    printf("\n查找测试：\n");
+    printf("\n开放定址法查找测试：\n");
     int searchKeys[] = {25, 35, 99};
     for(int i = 0; i < 3; i++) {
-        int pos = linearProbingSearch(table, searchKeys[i], divisionMethod);
+        int pos = linearProbingSearch(openTable, searchKeys[i], divisionMethod);
         if(pos != -1) {
             printf("找到 %d，位置: %d\n", searchKeys[i], pos);
         } else {
@@ -157,9 +135,22 @@ int main() {
         }
     }
     
-    // 释放内存
-    free(table->table);
-    free(table);
+    // 删除测试
+    printf("\n开放定址法删除测试：\n");
+    int deleteKey = 35;
+    int deletedPos = linearProbingDelete(openTable, deleteKey, divisionMethod);
+    if(deletedPos != -1) {
+        printf("删除 %d，位置: %d\n", deleteKey, deletedPos);
+    } else {
+        printf("未找到 %d，无法删除\n", deleteKey);
+    }
+    
+    // 显示删除后的开放定址法哈希表
+    displayOpenHashTable(openTable);
+    
+    // 释放开放定址法哈希表内存
+    freeOpenHashTable(openTable);
     
     return 0;
 }
+    

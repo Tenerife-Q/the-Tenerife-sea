@@ -1,3 +1,6 @@
+// chain_division.c
+// 使用除留余数法实现链地址哈希表
+
 #include <stdio.h>
 #include <stdlib.h>
 
