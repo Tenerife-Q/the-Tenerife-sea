@@ -74,7 +74,9 @@ void printTable(ChainHashTable *hashTable) {
 
 int main() {
     ChainHashTable *table = initChainHashTable(TABLE_SIZE);
-    int keys[] = {21, 32, 43, 54, 65, 76, 87};
+    // 推荐分布均匀的数据
+    int keys[] = {3, 7, 14, 18, 22, 27, 31}; 
+    // 3%11=3, 7%11=7, 14%11=3, 18%11=7, 22%11=0, 27%11=5, 31%11=9
     int n = sizeof(keys)/sizeof(keys[0]);
     printf("插入：");
     for (int i = 0; i < n; i++) {
