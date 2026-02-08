@@ -1,0 +1,28 @@
+{
+    "tasks": [
+        {
+            "type": "process",
+            "label": "build",
+            "command": "D:\\mingw64\\bin\\g++.exe",
+            "args": [
+                "-g",
+                "-fdiagnostics-color=always",
+                "${file}",
+                "-o",
+                "${fileDirname}\\${fileBasenameNoExtension}.exe"
+            ],
+            "options": {
+                "cwd": "${fileDirname}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "detail": "使用 g++ 编译 (自动处理路径空格)"
+        }
+    ],
+    "version": "2.0.0"
+}
