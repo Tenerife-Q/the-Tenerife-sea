@@ -26,6 +26,20 @@ using namespace std;
 const int N = 100010;
 
 int m;
+/*
+ * 栈 (Stack) - "LIFO (Last In First Out)"
+ * 
+ * stk: 栈数组
+ * tt: 栈顶指针 (Top of stack)
+ * - 初始为0，表示栈空
+ * - 数据从下标 1 开始存储
+ * 
+ * 执行图解 (push 10, push 20, pop):
+ * 1. tt=0: [ ]
+ * 2. tt=1: [ 10 ]
+ * 3. tt=2: [ 10, 20 ]
+ * 4. tt=1: [ 10 ] (实际上stk[2]还是20，只是逻辑删除了)
+ */
 int stk[N], tt = 0;
 
 int main() {
@@ -40,13 +54,13 @@ int main() {
         cin >> op;
         if (op == "push") {
             cin >> x;
-            stk[ ++ tt] = x;
+            stk[ ++ tt] = x;    // 先移动指针，再填入数据
         }
         else if (op == "pop") {
-            tt -- ;
+            tt -- ;             // 指针回退，数据被"逻辑删除"
         }
         else if (op == "empty") {
-            cout << (tt > 0 ? "NO" : "YES") << endl;
+            cout << (tt > 0 ? "NO" : "YES") << endl; // tt=0表示空
         }
         else if (op == "query") {
             cout << stk[tt] << endl;
