@@ -27,6 +27,22 @@ using namespace std;
 const int N = 100010;
 
 int m;
+/*
+ * 队列 (Queue) - "FIFO (First In First Out)"
+ * 
+ * q: 队列数组
+ * hh: 队头指针 (Head) - 指向当前队头元素
+ * tt: 队尾指针 (Tail) - 指向当前队尾元素
+ * 
+ * - 初始状态: hh = 0, tt = -1 (表示空，因为 hh > tt)
+ * - 判空条件: hh <= tt
+ * 
+ * 执行图解 (push 10, push 20, pop):
+ * 1. hh=0, tt=-1 : [ ]
+ * 2. hh=0, tt=0  : [ 10 ]
+ * 3. hh=0, tt=1  : [ 10, 20 ]
+ * 4. hh=1, tt=1  : [ (10), 20 ] (10被逻辑出队，永远留在了数组前端)
+ */
 int q[N], hh = 0, tt = -1;
 
 int main() {
@@ -41,13 +57,13 @@ int main() {
         cin >> op;
         if (op == "push") {
             cin >> x;
-            q[ ++ tt] = x;
+            q[ ++ tt] = x; // 队尾指针后移，新人入队
         }
         else if (op == "pop") {
-            hh ++ ;
+            hh ++ ; // 队头指针后移，老队员出局
         }
         else if (op == "empty") {
-            cout << (hh <= tt ? "NO" : "YES") << endl;
+            cout << (hh <= tt ? "NO" : "YES") << endl; // hh > tt 时为空
         }
         else if (op == "query") {
             cout << q[hh] << endl;
