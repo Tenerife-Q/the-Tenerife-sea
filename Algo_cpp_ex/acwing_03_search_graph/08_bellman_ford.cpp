@@ -107,6 +107,7 @@ int bellman_ford()
     return dist[n];
 }
 
+/*
 struct Edge{
     int a, b, w;
 } edges[M];
@@ -125,6 +126,8 @@ int bellman_ford(){
     }
     return dist[n] > 0x3f3f3f3f / 2 ? -0x3f3f3f3f : dist[n];
 }
+*/
+
 
 int main()
 {
