@@ -97,6 +97,36 @@ int dijkstra()
     if (dist[n] == 0x3f3f3f3f) return -1;
     return dist[n];
 }
+/*
+int dijsktra(){
+    memset(dist, 0x3f, sizeof dist);
+    dist[1] = 0;
+
+    for(int i = 0; i < n; i ++ ) {
+        int t = -1; 每轮都要重新选一个点，所以 t 需要重置
+        for(int j = 1; j <= n; j ++ ) {
+            if(!st[j]) {
+                if(t == -1 || dist[t] > dist[j]){ 
+                这里注意顺序，先判断t==-1，再比较dist[t]和dist[j]，否则t=-1时会访问dist[-1]，越界访问。
+                    t = j;
+                } 
+            }
+        }
+
+        if(dist[t] == 0x3f3f3f3f) break;
+
+        st[t] = true;
+
+        for(int j = 1; j <= n; j ++ ) {
+            if(dist[j] > dist[t] + g[t][j]) {
+                dist[j] = dist[t] + g[t][j];
+                pre[j] = t;
+            }
+        }
+    }
+}
+*/
+
 
 void print_path()
 {
