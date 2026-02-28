@@ -1,7 +1,15 @@
 # 第三章 搜索与图论 - 综合练习题
 
 这里精选了几道经典的算法竞赛风格题目，涵盖了本章学习的核心算法。
-这些题目往往不是直接让你套板子，而是需要你分析题目性质，选择合适的图论模型。
+这些代码都已经为你准备好了，可以直接编译运行。
+
+| 题目 | 知识点 | 代码文件 |
+| :--- | :--- | :--- |
+| **1. 迷宫救援** | BFS + 状态压缩 | [ex01_maze_rescue.cpp](./ex01_maze_rescue.cpp) |
+| **2. 城市贸易** | 正反图 SPFA / 分层图 | [ex02_city_trade.cpp](./ex02_city_trade.cpp) |
+| **3. 繁忙的物流** | 0/1分数规划 + MST | [ex03_busy_logistics_mst.cpp](./ex03_busy_logistics_mst.cpp) |
+| **4. 战略会议** | 树的重心 / 换根DP | [ex04_strategic_meeting.cpp](./ex04_strategic_meeting.cpp) |
+| **5. 犯罪团伙** | 扩展域并查集 / 二分图 | [ex05_crime_gangs_dsu.cpp](./ex05_crime_gangs_dsu.cpp) |
 
 ## 题目 1: 迷宫救援 (BFS + 最短路变形)
 **标签**: `BFS` `状态压缩`
