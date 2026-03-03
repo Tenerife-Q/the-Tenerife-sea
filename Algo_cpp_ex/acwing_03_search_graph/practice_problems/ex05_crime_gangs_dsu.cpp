@@ -30,6 +30,65 @@ void unite(int x, int y) {
     if (rootX != rootY) parent[rootX] = rootY;
 }
 
+/*
+int find(int x) {
+    if( p[x] != x) p[x] = find(p[x]);
+    return p[x];
+}
+
+void unite(int x, int y) {
+    int rootX = find(x);
+    int rootY = find(y);
+    if(rootX != rootY) p[rootX] = rootY;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(0);
+
+    if(cin >> n >> m) {
+        for(int i = 1; i <= 2 * n; i++ ) parent[i] = i;
+        
+        bool conflict = false;;
+        int conflict_idx = -1;
+
+        for(int i = 1; i <= m; i++) {
+            char type;
+            int u, v;
+            cin >> type >> u >> v;
+
+            if(conflict) continue;
+            
+            if(type == 'F) {
+                if(find(u) == find(u + n) || find(v) == find(v + n)){
+                    conflict = true;
+                    conflict_idx = i;
+                    } else {
+                    unite(u, v);
+                    unite(u + n, v + n);
+                }
+            } else if(type == 'E') {
+                if(find(u) == find(v) || find(u + n) == find(v + n)) {
+                    conflict = true;
+                    conflict_idx = i;
+                } else {
+                    unite(u, v + n);
+                    unite(v, u + n);
+                }
+            }
+        }
+
+        if(conflict) {
+            cout << conflict_idx << endl;
+        } else {
+            cout << "OK" << endl;
+        }
+    }
+    return 0;
+}
+*/
+
+
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(0);
