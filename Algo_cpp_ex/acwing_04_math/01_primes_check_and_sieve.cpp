@@ -22,6 +22,14 @@ bool is_prime(int n) {
     return true;
 }
 
+
+bool is_prime(int n) {
+    if(n < 2) return false;
+    for(int i = 2; i <= n / i; i++ ) {
+        if(n % i == 0) return false;
+    }
+    return true;
+}
 // ==========================================
 // 2. 试除法分解质因数 - O(sqrt(n))
 // 输出: 质因数 p 以及对应的指数 c
@@ -42,6 +50,20 @@ void divide(int n) {
     cout << endl;
 }
 
+
+void divide(int n) {
+    for(int i = 2; i <= n / i; i ++ ) {
+        if(n % i == 0) {
+            int s = 0;
+            while(n % i == 0) {
+                n /= i;
+                s++;
+            }
+            cout << i << "^" << s << " ";
+        }
+    }
+    if(n > 1) cout << n << "^1";
+}
 // ==========================================
 // 3. 线性筛法 (欧拉筛法) 求 1~n 的质数 - O(n)
 // 竞赛必备！每个合数只会被其最小质因子筛掉一次，效率极高。
