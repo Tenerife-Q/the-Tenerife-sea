@@ -84,6 +84,26 @@ long long get_divisors_count(int n) {
     return res;
 }
 
+long long get_divisors_count(int n) {
+    if(n == 1) return 1;
+    unordered_map<int, int> primes;
+    for(int i = 2; i <= n / i; i++) {
+        while(n % i == 0) {
+            n /= i;
+            primes[i]++;
+        }
+    }
+    if(n > 1) primes[n]++;
+
+    long long res = 1;
+    for (auto p : primes) {
+        res = res * (p.second + 1);
+    }
+    return res;
+}
+
+
+
 // 约数之和计算
 long long get_divisors_sum(int n) {
     if (n == 1) return 1;
@@ -99,14 +119,61 @@ long long get_divisors_sum(int n) {
     long long res = 1;
     for (auto p : primes) {
         int a = p.first, b = p.second;
-        // 计算等比数列求和: t = (a^0 + a^1 + ... + a^b)
-        // 方法 1: 秦九韶算法思想 (这种写法很巧妙，避免了多次快速幂)
-        // t = 1
-        // t = t * a + 1 -> a + 1
-        // t = t * a + 1 -> a^2 + a + 1
+        // 目标：计算约数之和公式中该质因子对应的等比数列求和项
+        // Sum = (p1^0 + p1^1 + ... + p1^a1) * (p2^0 + p2^1 + ... + p2^a2) * ...
+        // 本次循环计算的是其中一项: t = (p^0 + p^1 + ... + p^b)
+        // 
+        // 传统方法：使用等比数列求和公式 S = (p^(b+1) - 1) / (p - 1)
+        // - 缺点：涉及除法运算，在模运算 (mod) 下除法需要求“乘法逆元”，比较麻烦且容易出错。
+        //
+        // 巧妙方法：秦九韶算法 (Horner's Method) 思想变换
+        // 我们可以把多项式 p^b + p^(b-1) + ... + p^1 + 1 改写成层层嵌套的形式：
+        // Sum = (...((1 * p + 1) * p + 1) * p + ... + 1)
+        // 
+        // 流程推导 (例如求 1 + p + p^2 + p^3, 即 b=3)：
+        // - 初始 t = 1
+        // - 第一次循环 (b=3 -> 2): t = t * p + 1 = p + 1
+        // - 第二次循环 (b=2 -> 1): t = t * p + 1 = (p + 1) * p + 1 = p^2 + p + 1
+        // - 第三次循环 (b=1 -> 0): t = t * p + 1 = (p^2 + p + 1) * p + 1 = p^3 + p^2 + p + 1
+        // 
+        // 为什么要 % mod？
+        // 1. 现实限制与算法考察重心：
+        //    约数之和随着 N 的增大呈现爆炸式增长。例如 N 较大时，其约数之和可能有数百位甚至数千位。
+        //    C++ 的 long long (64位) 无法存储这么大的数。
+        //    如果不取模，这也题目就会变成考察“高精度大整数运算”的繁琐代码实现，而非考察“数论推导”的核心逻辑。
+        //
+        // 2. 验证算法正确性 (Hash 思想)：
+        //    题目不需要知道那个几千位的天文数字具体是多少，只需要验证你的算法逻辑对不对。
+        //    取模相当于保留了该数字的“特征值”或“指纹”。如果你的算法逻辑正确，算出的余数一定是一样的。
+        //
+        // 3. 模运算性质：
+        //    (A + B) % M = ((A % M) + (B % M)) % M
+        //    (A * B) % M = ((A % M) * (B % M)) % M
+        //    我们在每一步迭代中都取模，保证中间结果 t 始终在 [0, mod-1] 范围内，从而避免了溢出，且保证最终结果符合模运算规则。
         long long t = 1;
         while (b--) t = (t * a + 1) % mod;
         res = res * t % mod;
+    }
+    return res;
+}
+
+long long get_divisors_sum(int n) {
+    if(n == 1) return 1;
+    unordered_map<int, int> primes;
+    for(int i = 2; i <= n / i; i++) {
+        while(n % i == 0) {
+            n /= i;
+            primes[i]++;
+        }
+    }
+    if(n > 1) primes[n]++;
+
+    long long res = 1;
+    for(auto p : primes) {
+        int a = p.first, b = p.second;
+        long long t = 1;
+        while(b--) t = t * a + 1;
+        res = res * t;
     }
     return res;
 }
