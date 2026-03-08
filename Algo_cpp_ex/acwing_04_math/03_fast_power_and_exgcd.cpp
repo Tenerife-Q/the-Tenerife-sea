@@ -285,6 +285,24 @@ int Exgcd(int a, int b, int &x, int &y) {
   y = t - (a / b) * y;
   return d;
 }
+
+// 逻辑最清晰的版本，严格对应数学公式
+int exgcd_clear(int a, int b, int &x, int &y) {
+    if (b == 0) {
+        x = 1; y = 0;
+        return a;
+    }
+
+    // 1. 明确声明用来接收下一层结果的变量 x1 和 y1
+    int x1, y1;
+    int d = exgcd_clear(b, a % b, x1, y1);
+
+    // 2. 递归返回后，严格按照数学公式更新当前层的 x 和 y
+    x = y1;
+    y = x1 - (a / b) * y1;
+
+    return d;
+}
 */
 
 // ----------------------------------------------------
