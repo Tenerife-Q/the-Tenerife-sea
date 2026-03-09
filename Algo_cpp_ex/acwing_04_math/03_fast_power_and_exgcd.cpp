@@ -392,7 +392,30 @@ int exgcd_iterative(int a, int b, int &x, int &y) {
     return a; 
 }
 
+int exgcd_iterative_clear(int a, int b, int &x, int &y) {
+    int x0 = 1, y0 = 0;
+    int x1 = 0, y1 = 1;
 
+    while(b) {
+        int q = a / b;
+
+        int r = a % b;
+        a = b;
+        b = r;
+
+        int x2 = x0 - q * x1;
+        x0 = x1;
+        x1 = x2;
+
+        int y2 = y0 - q * y1;
+        y0 = y1;
+        y1 = y2;
+    }
+
+    x = x0;
+    y = y0;
+    return a;
+}
 
 
 // ----------------------------------------------------
