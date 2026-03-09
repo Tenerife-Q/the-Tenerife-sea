@@ -1,4 +1,4 @@
-/**
+﻿/**
  * 模块：第四讲 数学知识
  * 主题：组合数学与欧拉函数 (Combinatorics & Euler's Function)
  * ICPC 核心考点：快速计算组合数 $C_a^b \pmod p$、容斥原理以及与互质相关的计数。
@@ -135,6 +135,27 @@ void get_primes_euler(int n) {
     }
 }
 */
+
+void get_eulers(int n) {
+    euler[1] = 1;
+    for(int i = 2; i <= n; i++) {
+        if(!st[i]) {
+            primes[cnt++] = i;
+            euler[i] = i - 1;
+        }
+        for(int j = 0; primes[j] <= n / i; j++) {
+            st[primes[j] * i] = true;
+            if(i % primes[j] == 0) {
+                euler[primes[j] * i] = euler[i] * primes[j];
+                break;
+            }
+            euler[primes[j] * i] = euler[i] * (primes[j] - 1);
+        }
+    }
+}
+
+
+
 
 
 // ==========================================
