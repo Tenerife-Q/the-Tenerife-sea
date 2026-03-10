@@ -271,6 +271,9 @@ int C(int a, int b) {
  * 去兑换纯数学代数体系（费马小定理）的工程落地。
  */
 
+
+// =====================================================================================
+// 类似于杨辉三角的加法递推预处理组合数 C(a, b) 的代码实现
 void init_C() {
     for(int i = 0; i <= 2000; i++) {
         for(int j = 0; j <= i; j++) {
@@ -279,6 +282,29 @@ void init_C() {
         }
     }
 }
+
+
+// 预处理阶乘及其逆元的代码实现
+LL qmi_inv(LL a, LL k, LL p) {
+    LL res = 1;
+    while(k){
+        if(k & 1) res = res * a % p;
+        k >>= 1;
+        a = a * a % p;
+    }
+    return res;
+}
+
+void init_fact() {
+    fact[0] = infact[0] = 1;
+    for(int i = 1; i < N; i++) {
+        fact[i] = (LL)fact[i - 1] * i % mod;
+        infact[i] = (LL)infact[i - 1] * qmi_inv(i, mod - 2, mod) % mod;
+    }
+}
+
+
+
 
 int main() {
     cout << "phi(12) = 1 ~ 12 之间互质的个数 = " << phi(12) << endl;
