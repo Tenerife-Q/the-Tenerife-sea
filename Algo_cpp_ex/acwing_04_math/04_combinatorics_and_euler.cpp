@@ -309,6 +309,8 @@ int C(int a, int b) {
 }
 
 
+
+
 int main() {
     cout << "phi(12) = 1 ~ 12 之间互质的个数 = " << phi(12) << endl;
     get_eulers(20);
