@@ -303,7 +303,10 @@ void init_fact() {
     }
 }
 
-
+int C(int a, int b) {
+    if(a < b || a < 0 || b < 0) return 0;
+    return (LL)fact[a] * infact[b] % mod * infact[a - b] % mod;
+}
 
 
 int main() {
