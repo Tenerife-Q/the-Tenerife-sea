@@ -270,6 +270,16 @@ int C(int a, int b) {
  * 整个第二部分的代码逻辑，本质上是在用计算机的二进制位运算（快速幂）和数组空间（预处理），
  * 去兑换纯数学代数体系（费马小定理）的工程落地。
  */
+
+void init_C() {
+    for(int i = 0; i <= 2000; i++) {
+        for(int j = 0; j <= i; j++) {
+            if(!j) c[i][j] = 1;
+            else c[i][j] = (c[i - 1][j] + c[i - 1][j - 1]) % mod;
+        }
+    }
+}
+
 int main() {
     cout << "phi(12) = 1 ~ 12 之间互质的个数 = " << phi(12) << endl;
     get_eulers(20);
