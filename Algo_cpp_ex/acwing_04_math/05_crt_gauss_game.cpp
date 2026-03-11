@@ -262,12 +262,17 @@ int gauss(int n, vector<vector<double>>& a) {
         r++; // 有效方程锁定落位，r指针对齐下一行
     }
 
-    // [战后分型]
+    // [战后分型：处理冗余或矛盾方程]
+    // 为什么会出现 r < n？ 
+    // 当矩阵存在线性相关时，某一列及以下的系数被彻底消为 0，导致找不到有效主元，触发了 `continue`。
+    // 此时列指针 c 前进，但有效方程行指针 r 停滞。最终矩阵底部（第 r 至 n-1 行）的左侧系数必然全为 0：
+    // 形态 1 (无解):      [ 0  0  0 | 5 ] -> 0*x0 + 0*x1 + 0*x2 = 5，代数悖论。
+    // 形态 2 (无穷多解):  [ 0  0  0 | 0 ] -> 0 = 0，恒等式。缺少约束独立方程，存在自由变量。
     if (r < n) {
         for (int i = r; i < n; i++)
             if (fabs(a[i][n]) > eps) 
-                return 2; // 0 == 非零常数，无解
-        return 1; // 0 == 0，无穷多组解
+                return 2; // 发现形态 1 (0 == 非零常数)，无解
+        return 1; // 全是形态 2 (0 == 0)，无穷多组解
     }
 
     // 【Step 5: 回代填数】矩阵已成完美上三角，倒序反洗
@@ -279,6 +284,46 @@ int gauss(int n, vector<vector<double>>& a) {
 
     return 0; // 【有唯一解】
 }
+
+
+/*
+int gauss(int n, vector<vector<double>& a) {
+    int c, r;
+    for(int c = 0; r = 0; c < n; c++ ) {
+        int t = r;
+        for(int i = r + 1; i < n; i++ ) {
+            if(fabs(a[i][c]) > fabs(a[t][c])) t = i;
+        }
+        if(fabs(a[t][c]) < eps) continue;
+        for(int i = c; i <= n; i++ ) swap(a[t][i], a[r][i]);
+        for(int i = n; i >= c; i--) a[r][i] /= a[r][c];
+        for(int i = r + 1; i < n; i++ ) {
+            if(fabs(a[i][c]) > eps) {
+                for(int j = n; j >= c; j--) {
+                    a[i][j] -= a[i][c] * a[r][j];
+                }
+            }
+        }
+        r++;
+    }
+
+    if(r < n) {
+        for(int i = r; i < n; i++ ) {
+            if (fabs(a[i][n]) > eps) return 2;
+        }
+        return 1;
+    }
+
+    for(int i = n - 1; i >= 0; i-- ) {
+        for(int j = i + 1; j < n; j++ ) {
+            a[i][n] -= a[i][j] * a[j][n];
+        }
+    }
+    return 0;
+}
+
+*/
+
 
 // ==========================================
 // 3. 博弈论 Nim 游戏 (Game Theory)
