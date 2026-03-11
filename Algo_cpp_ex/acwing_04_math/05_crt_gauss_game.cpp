@@ -64,12 +64,19 @@ LL excrt(int n, vector<LL>& m, vector<LL>& a) {
         // 我们利用等比例放大，将基础解放大 (a2 - a1) / d 倍，得到真正的 k1 特解
         k1 *= (a2 - a1) / d;
 
-        // 【Step 4】收缩为最小正整数【通解】(General Solution)
+        // 【Step 4】利用通解性质执行收割：挑选出最安全的【最小非负整数特解】
         // 增量周期 t 为什么是 m2/d？
         // 根据非齐次方程的通解 = 特解 + 齐次方程(m1*k1 - m2*k2 = 0)的解。
-        // 两边除以d后， (m1/d)*k1 = (m2/d)*k2，因为 (m1/d) 和 (m2/d) 此时必定互质，
+        // 两边除以d后：(m1/d)*k1 = (m2/d)*k2。由于 (m1/d) 和 (m2/d) 必定互质，
         // 从而推导出 k1 的增长步长必须是 t = m2/d 的整数倍。
-        // 为了防止下一轮运算中 long long 溢出，我们将其模上跨度 t，强制收缩到最小非负整数解。
+        // 所以 k1 真正的【通解】集合为：k1_new = k1 + y * t（y为任意整数）。
+        // 
+        // 既然通解有无数个（选哪个代入下一步在数学上都对），我们面临两个工程问题：
+        // 1. 防溢出：如果 k1 极大，下一步 a1 = m1 * k1 会直接撑爆 long long。
+        // 2. 防负数：如果 k1 是负数，下一步算出的新余数 a1 也是负数，会破坏后续同余逻辑。
+        // 破局方案：在 C++ 中，% t 操作本质上就是在不断加/减 t。
+        // 语句 `(k1 % t + t) % t` 的真正物理含义是：自动加上或减去若干个周期 t，
+        // 在无限个通解中，帮你找出那个唯一落在 [0, t-1] 区间内、绝对安全的极小正数代表！
         LL t = m2 / d;
         k1 = (k1 % t + t) % t;
 
@@ -89,6 +96,31 @@ LL excrt(int n, vector<LL>& m, vector<LL>& a) {
     if (has_ans) return (a1 % m1 + m1) % m1;
     else return -1;
 }
+
+/*
+LL excrt(int n, vector<int>& m, vector<int>& a) {
+    bool has_ans = true;
+    LL m1 = m[0], a1 = a[0];
+    for(int i = 1; i <  n; i++ ) {
+        LL m2 = m[i], a2 = a[i];
+        LL k1, k2;
+        LL d = exgcd(m1, m2, k1, k2);
+        if((a2 - a1) % d != 0) {
+            has_ans = false;
+            break;
+        }
+        k1 *= (a2 - a1) / d;
+        LL t = m2 / d;
+        k1 = (k1 % t + t) % t;
+        a1 = m1 * k1 + a1;
+        m1 = abs(m1 / d * m2);
+    }
+    if (has_ans) return (a1 % m1 + m1) % m1;
+    else return -1;
+}
+
+*/
+
 
 // ==========================================
 // 2. 高斯消元法 (Gaussian Elimination) O(N^3)
