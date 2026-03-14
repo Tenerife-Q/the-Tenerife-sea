@@ -19,6 +19,10 @@ Output:
  - For each pair, print a^b mod 1e9+7 on its own line.
 */
 
+
+
+
+/*
 const int MOD = 1e9 + 7;
 
 // 【核心模板】：快速幂计算 (base^exp) % mod
@@ -51,4 +55,35 @@ int main() {
         cout << qpow(a, b) << "\n";
     }
     return 0;
+}
+*/
+
+
+#include <iostream>
+using namespace std;
+typedef long long ll;
+const int p = 1e9 + 7;
+
+ll qmi(ll a, ll k, ll p) {
+    ll res = 1;
+    a %= p;
+    while(k) {
+        if(k & 1) res = res * a % p;
+        a = a * a % p;
+        k >>= 1;
+    }
+    return res;
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    int n;
+    cin >> n;
+    while( n-- ) {
+        ll a, k;
+        cin >> a >> k;
+        cout << qmi(a, k, p) << "\n";
+    }
 }
