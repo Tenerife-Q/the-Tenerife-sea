@@ -1,4 +1,36 @@
 /*
+题目：Counting Divisors
+
+描述（中）：给定 Q 个查询，每个查询给出一个整数 X（1 ≤ X ≤ 10^6），输出 X 的约数个数。
+
+Description (EN): Given Q queries, each provides an integer X (1 ≤ X ≤ 10^6). For each X, output the number of divisors of X.
+
+输入 (Input):
+ - 第一行：整数 Q，表示查询次数（1 ≤ Q ≤ 1e5）。
+ - 接下来 Q 行：每行一个整数 X（1 ≤ X ≤ 1e6）。
+
+输出 (Output):
+ - 对每个查询输出一行，表示 X 的约数个数。
+
+示例 (Example):
+输入:
+3
+16
+17
+18
+
+输出:
+5
+2
+6
+
+关于 Q 与 X 的关系与复杂度：
+ - 设 MAX_X 为 X 的上界（本题 MAX_X = 1e6）。使用“调和级数筛法”预处理需 O(MAX_X log MAX_X) 时间和 O(MAX_X) 内存，随后每次查询 O(1)。
+ - 总时间：O(MAX_X log MAX_X + Q)。因此当 Q 很大且 MAX_X 不大时（例如本题），预处理法最优。
+ - 若 X 很大（例如 1e12）且 Q 很小，使用每次 O(sqrt(X)) 的试除/质因数分解法更合适，总时间约 O(Q * sqrt(X))。
+*/
+
+/*
 #include <iostream>
 #include <unordered_map>
 using namespace std;
