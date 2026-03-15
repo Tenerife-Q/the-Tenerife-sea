@@ -192,7 +192,8 @@ int main() {
 }
 
 
-// 依旧recursive
+// 依旧recursive 这甚至能隐含解决 0^0 的问题
+// 0^0 按题约定为 1，0^5 按题约定为 0，0^0 的情况在 a==0 的特判里已经覆盖了
 // #include <iostream>
 // using namespace std;
 // using ll = long long;
@@ -214,3 +215,63 @@ int main() {
 //         cout << power(a, power(b, c, 1e9 + 6), 1e9 + 7) << "\n";
 //     }
 // }
+
+#include <iostream>
+using namespace  std;
+typedef long long ll;
+const int MOD = 1e9 + 7;
+
+int power(int a, int b, int m) {
+    if (b == 0) return 1;
+    ll p = power(a, b / 2, m);
+    p = p * p % m;
+    if(b % 2 == 1) p = p * a % m;
+    return p;
+}
+
+int main() {
+    int n;
+    cin >> n;
+    while(n--) {
+        int a, b, c;
+        cin >> a >> b >> c;
+        cout << power(a, power(b, c, MOD - 1), MOD) << "\n";
+    }
+}
+
+#include <iostream>
+using namespace std;
+typedef long long ll;
+const int p = 1'000'000'007LL;
+
+ll qpow(ll base, ll exp, ll mod) {
+    ll res = 1;
+    base %= mod;
+    while(exp) {
+        if(exp & 1) res = res * base % mod;
+        base = base * base % mod;
+        exp >>= 1;
+    }
+    return res;
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    int n;
+    cin >> n;
+    while(n--) {
+        ll a, b, c;
+        cin >> a >> b >> c;
+        if(a == 0) {
+            if(b == 0 && c > 0) cout << 1 << "\n";
+            else cout << 0 << "\n";
+            continue;
+        }
+        ll exp = qpow(b, c, p - 1);
+        ll ans = qpow(a, exp, p);
+        cout << ans << "\n";
+    }
+    return 0;
+}
