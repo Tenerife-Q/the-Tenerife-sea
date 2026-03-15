@@ -60,3 +60,89 @@ int main() {
 这道题的核心是“枚举答案并验证”的逆向思维，结合调和级数的复杂度分析将原本 O(n^2) 的问题转化为 O(X log X) 的可行算法。
 掌握此类贡献/倒序枚举技巧，对后续的数论题（如 Sum of Divisors、Common Divisors 的变体）极其重要。
 */
+
+
+
+
+
+#include <iostream>
+#include <vector>
+using namespace std;
+const int N = 1000000;
+
+int main() {
+    vector<int> count(N + 1);
+
+    int n;
+    cin >> n;
+    for (int i = 1; i <= n; i++) {
+        int x;
+        cin >> x;
+        count[x]++;
+    }
+
+    for (int i = N; i >= 1; i--) {
+        int total = 0;
+        for (int j = i; j <= N; j += i) {
+            total += count[j];
+        }
+        if (total >= 2) {
+            cout << i << "\n";
+            break;
+        }
+    }
+}
+
+
+
+
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+// 定义最大可能的值域 10^6
+const int N = 1000000;
+
+int main() {
+    // 【优化 1：Fast I/O】
+    // 斩断 cin/cout 和 stdio 的同步，极大地提升大规模数据的读写速度
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    // 桶数组：记录每个数值出现的次数
+    // 局部 vector 自动分配在堆区，N+1 防越界，默认初始化为 0
+    vector<int> count(N + 1, 0);
+
+    int n;
+    // 即使在没有更多输入的情况下，这种写法也能防止意外
+    if (!(cin >> n)) return 0;
+
+    // 读入所有数字并放入对应值域的“桶”中
+    for (int i = 0; i < n; i++) {
+        int x;
+        cin >> x;
+        count[x]++;
+    }
+
+    // 【核心算法：逆向枚举最大公约数】
+    // 从最大的可能公约数 N 开始往下枚举，第一个找到的满足条件的必然是最大的
+    for (int i = N; i >= 1; i--) {
+        int total = 0;
+        
+        // 枚举 i 的所有倍数 j
+        for (int j = i; j <= N; j += i) {
+            total += count[j]; // 累加该倍数在原数组中出现的次数
+            
+            // 【优化 2：Early Exit (提早剪枝)】
+            // 只要凑够 2 个，说明存在两个数的最大公约数是 i
+            // 立刻输出，并直接结束整个程序，拒绝后续无效的加法！
+            if (total >= 2) {
+                cout << i << "\n";
+                return 0; 
+            }
+        }
+    }
+
+    return 0;
+}
