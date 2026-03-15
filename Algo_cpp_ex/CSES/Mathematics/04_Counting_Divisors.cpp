@@ -173,6 +173,10 @@ const int MAX_X = 1000000;
 
 // d[i] 记录数字 i 的约数个数
 // 全局数组默认初始化为 0
+// 多给 5 个空间，防止越界访问（虽然本题不太可能，但这是个好习惯）
+// 也可以在main函数里定义 vector<int> d(MAX_X + 5) 来代替全局数组
+// 如果X是确定的，直接全局数组，外部定义更节省内存和时间
+// 如果X是动态的，或者需要输入，main内部使用 vector更灵活
 int d[MAX_X + 5];
 
 // 调和级数筛法预处理
@@ -208,4 +212,32 @@ int main() {
     }
 
     return 0;
+}
+
+
+
+
+#include <iostream>
+#include <vector>
+using namespace std;
+const int N = 1000000;
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    vector<int> d(N + 1);
+    for(int i = 1; i <= N; i++) {
+        for(int j = i; j <= N; j += i) {
+            d[j]++;
+        }
+    }
+    
+    int n;
+    cin >> n;
+    while(n--) {
+        int x;
+        cin >> x;
+        cout << d[x] << "\n";
+    }
+    
 }
