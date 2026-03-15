@@ -82,6 +82,11 @@ for (int j = 1; j <= k; j++) {
 */
 
 
+
+// 约数之积数学原理推导以及公式见draft
+
+
+
 #include <iostream>
 using namespace std;
 using ll = long long;
@@ -163,6 +168,100 @@ int main() {
     }
 
     cout << count << " " << sum << " " << prod << "\n";
+
+    return 0;
+}
+
+
+
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+typedef long long ll;
+const ll MOD = 1e9 + 7;
+const ll MOD_EXP = 1e9 + 6; // 指数层面的模数 (M-1)
+
+// 快速幂：计算 (a^b) % m
+ll power(ll a, ll b, ll m = MOD) {
+    ll res = 1;
+    a %= m;
+    while (b > 0) {
+        if (b % 2 == 1) res = (res * a) % m;
+        a = (a * a) % m;
+        b /= 2;
+    }
+    return res;
+}
+
+// 模逆元：用于计算约数之和的分母部分
+ll modInverse(ll n) {
+    return power(n, MOD - 2);
+}
+
+int main() {
+    // 提升大规模数据下的 I/O 效率
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int n;
+    cin >> n;
+
+    vector<ll> x(n), k(n);
+    for (int i = 0; i < n; i++) {
+        cin >> x[i] >> k[i];
+    }
+
+    // 1. 计算约数个数 (Number of Divisors)
+    ll cnt = 1;
+    for (int i = 0; i < n; i++) {
+        cnt = (cnt * (k[i] + 1)) % MOD;
+    }
+
+    // 2. 计算约数之和 (Sum of Divisors)
+    ll sum = 1;
+    for (int i = 0; i < n; i++) {
+        // 公式: (x^(k+1)-1) / (x-1)
+        ll num = (power(x[i], k[i] + 1) - 1 + MOD) % MOD;
+        ll den = modInverse(x[i] - 1);
+        ll term = (num * den) % MOD;
+        sum = (sum * term) % MOD;
+    }
+
+    // 3. 计算约数之积 (Product of Divisors)
+    // 难点在于指数 d(N)/2 % (MOD-1) 的处理
+    ll prod = 1;
+    ll div_cnt_for_exp = 1;
+    bool has_even_k_plus_1 = false;
+
+    // 判定是否为完全平方数，并处理指数项
+    for (int i = 0; i < n; i++) {
+        if (!has_even_k_plus_1 && (k[i] + 1) % 2 == 0) {
+            // 找到第一个偶数项 (ki+1)，除以 2 解决 d(N)/2 的整数问题
+            div_cnt_for_exp = (div_cnt_for_exp * ((k[i] + 1) / 2)) % MOD_EXP;
+            has_even_k_plus_1 = true;
+        } else {
+            div_cnt_for_exp = (div_cnt_for_exp * (k[i] + 1)) % MOD_EXP;
+        }
+    }
+
+    if (has_even_k_plus_1) {
+        // 情况 A: N 不是完全平方数，直接用 N^(d(N)/2)
+        for (int i = 0; i < n; i++) {
+            ll base = power(x[i], k[i]);
+            prod = (prod * power(base, div_cnt_for_exp)) % MOD;
+        }
+    } else {
+        // 情况 B: N 是完全平方数，所有的 k[i] 都是偶数
+        // 此时 div_cnt_for_exp 是 d(N)，公式变为 (sqrt(N))^d(N)
+        for (int i = 0; i < n; i++) {
+            ll base = power(x[i], k[i] / 2); // sqrt(xi^ki) = xi^(ki/2)
+            prod = (prod * power(base, div_cnt_for_exp)) % MOD;
+        }
+    }
+
+    cout << cnt << " " << sum << " " << prod << "\n";
 
     return 0;
 }
