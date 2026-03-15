@@ -88,7 +88,7 @@ int main() {
         }
         if (total >= 2) {
             cout << i << "\n";
-            break;
+            return 0;//标答是break; 但我觉得直接return更好，直接结束程序，拒绝后续无效的加法！
         }
     }
 }
@@ -145,4 +145,31 @@ int main() {
     }
 
     return 0;
+}
+
+
+#include <iostream>
+#include <vector>
+using namespace std;
+const int N = 1000000;
+
+int main() {
+    vector<int> count(N + 1);
+    int n;
+    cin >> n;
+    for(int i = 0; i < n; i++) {
+        int x;
+        cin >> x;
+        count[x]++;
+    }
+    for(int i = N; i >= 1; i--) {
+        int total = 0;
+        for(int j = i; j <= N; j += i) {
+            total += count[j];
+            if(total >= 2) {
+                cout << i << "\n";
+                return 0;
+            }
+        }
+    }
 }
