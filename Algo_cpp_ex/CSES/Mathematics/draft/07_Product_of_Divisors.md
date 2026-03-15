@@ -131,3 +131,144 @@ div_cnt_mod_exp = div_cnt_mod_exp * (k + 1) % MOD_EXP;
 这套递推逻辑将原本需要处理极大分数指数的复杂问题，拆解成了线性时间复杂度、空间复杂度仅为 $O(1)$（仅需维护几个状态变量）的局部最优解。
 
 如果你正在处理具体的模数（如 $10^9+7$），需要我为你进一步演示在什么极端边界条件下（例如 $N$ 的质因数含有模数本身时），这种运用费马小定理的降幂操作可能会面临失效风险吗？
+
+
+
+
+你提供的资料涵盖了 CSES - Divisor Analysis 的两种主流解法。**Solution 1** 侧重于利用前缀/后缀积处理指数位置的除法问题，而 **Solution 2** 则利用了 $N^{d(N)/2}$ 这一更本质的数学对称性。
+
+为了满足你严谨回答的要求，我将这两种方案的优点整合，并针对“指数位置不能直接进行模运算除法”这一核心难点，提供一份逻辑最清晰、工程实现最稳健的代码。
+
+---
+
+### 一、 核心数学字段解释
+
+题目给定 $N = \prod_{i=1}^n x_i^{k_i}$。
+
+| 字段名称 | 数学符号 | 计算公式 | 逻辑备注 |
+| --- | --- | --- | --- |
+| **约数个数** | $d(N)$ | $\prod (k_i + 1)$ | 每个质因数 $x_i$ 有 $0 \dots k_i$ 共 $k_i+1$ 种选法。 |
+| **约数之和** | $\sigma(N)$ | $\prod \frac{x_i^{k_i+1}-1}{x_i-1}$ | 利用等比数列求和公式，分母需转为模逆元。 |
+| **约数之积** | $\pi(N)$ | $N^{d(N)/2}$ | 约数成对存在，积为 $N$。$d(N)$ 为奇数时 $N$ 为完全平方数。 |
+
+---
+
+### 二、 深度解析：为什么 Solution 2 更优雅？
+
+在计算 $\pi(N) = N^{d(N)/2}$ 时，由于指数是在 $\pmod{10^9+6}$ 下运算，而 $2$ 与 $10^9+6$ **并不互质**，所以不能使用模逆元。
+
+**代码采用的分类讨论逻辑：**
+
+1. **若 $N$ 不是完全平方数：** 必然存在某个 $k_i$ 是奇数，则 $(k_i+1)$ 是偶数。我们只需将这**第一个**偶数项除以 2，其余项正常乘入指数，即可得到整数 $d(N)/2 \pmod{10^9+6}$。
+2. **若 $N$ 是完全平方数：** 所有的 $k_i$ 都是偶数。此时 $d(N)$ 是奇数，但 $N$ 的开方 $\sqrt{N} = \prod x_i^{k_i/2}$ 是整数。公式变形为 $\pi(N) = (\sqrt{N})^{d(N)}$，此时指数 $d(N)$ 无需除以 2。
+
+---
+
+### 三、 完整可复制代码（整合优化版）
+
+```cpp
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+typedef long long ll;
+const ll MOD = 1e9 + 7;
+const ll MOD_EXP = 1e9 + 6; // 指数层面的模数 (M-1)
+
+// 快速幂：计算 (a^b) % m
+ll power(ll a, ll b, ll m = MOD) {
+    ll res = 1;
+    a %= m;
+    while (b > 0) {
+        if (b % 2 == 1) res = (res * a) % m;
+        a = (a * a) % m;
+        b /= 2;
+    }
+    return res;
+}
+
+// 模逆元：用于计算约数之和的分母部分
+ll modInverse(ll n) {
+    return power(n, MOD - 2);
+}
+
+int main() {
+    // 提升大规模数据下的 I/O 效率
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int n;
+    cin >> n;
+
+    vector<ll> x(n), k(n);
+    for (int i = 0; i < n; i++) {
+        cin >> x[i] >> k[i];
+    }
+
+    // 1. 计算约数个数 (Number of Divisors)
+    ll cnt = 1;
+    for (int i = 0; i < n; i++) {
+        cnt = (cnt * (k[i] + 1)) % MOD;
+    }
+
+    // 2. 计算约数之和 (Sum of Divisors)
+    ll sum = 1;
+    for (int i = 0; i < n; i++) {
+        // 公式: (x^(k+1)-1) / (x-1)
+        ll num = (power(x[i], k[i] + 1) - 1 + MOD) % MOD;
+        ll den = modInverse(x[i] - 1);
+        ll term = (num * den) % MOD;
+        sum = (sum * term) % MOD;
+    }
+
+    // 3. 计算约数之积 (Product of Divisors)
+    // 难点在于指数 d(N)/2 % (MOD-1) 的处理
+    ll prod = 1;
+    ll div_cnt_for_exp = 1;
+    bool has_even_k_plus_1 = false;
+
+    // 判定是否为完全平方数，并处理指数项
+    for (int i = 0; i < n; i++) {
+        if (!has_even_k_plus_1 && (k[i] + 1) % 2 == 0) {
+            // 找到第一个偶数项 (ki+1)，除以 2 解决 d(N)/2 的整数问题
+            div_cnt_for_exp = (div_cnt_for_exp * ((k[i] + 1) / 2)) % MOD_EXP;
+            has_even_k_plus_1 = true;
+        } else {
+            div_cnt_for_exp = (div_cnt_for_exp * (k[i] + 1)) % MOD_EXP;
+        }
+    }
+
+    if (has_even_k_plus_1) {
+        // 情况 A: N 不是完全平方数，直接用 N^(d(N)/2)
+        for (int i = 0; i < n; i++) {
+            ll base = power(x[i], k[i]);
+            prod = (prod * power(base, div_cnt_for_exp)) % MOD;
+        }
+    } else {
+        // 情况 B: N 是完全平方数，所有的 k[i] 都是偶数
+        // 此时 div_cnt_for_exp 是 d(N)，公式变为 (sqrt(N))^d(N)
+        for (int i = 0; i < n; i++) {
+            ll base = power(x[i], k[i] / 2); // sqrt(xi^ki) = xi^(ki/2)
+            prod = (prod * power(base, div_cnt_for_exp)) % MOD;
+        }
+    }
+
+    cout << cnt << " " << sum << " " << prod << "\n";
+
+    return 0;
+}
+
+```
+
+---
+
+### 四、 关键注释与逻辑论证
+
+* **指数取模依据：** 费马小定理指出，若 $M$ 为质数，则 $a^b \equiv a^{b \pmod{M-1}} \pmod M$。因此 `div_cnt_for_exp` 必须对 $10^9+6$ 取模。
+* **约数之和的边界：** 在计算 `sum` 时，如果 $x_i - 1 = 0$（即 $x_i = 1$），则分母无逆元。但题目中 $x_i$ 为质数且 $x_i \ge 2$，故此处无需额外处理 $x_i=1$ 的异常。
+* **计算顺序风险：** 在计算 `prod` 时，先计算 `base = power(x[i], k[i])` 再计算其 `div_cnt_for_exp` 次方，可以有效避免在底数层面出现极其庞大的数值，确保模运算的正确性。
+
+这份代码相比 Solution 1 减少了两个 $O(n)$ 的前缀/后缀数组空间开销，在内存受限的环境下更具优势。
+
+你是否需要我针对约数之和公式中“等比数列求和”在更通用的非质数模数（如 $M$ 不是质数）下的处理方法进行推导？
