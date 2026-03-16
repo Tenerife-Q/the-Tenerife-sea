@@ -195,3 +195,47 @@ int main() {
 
     return 0;
 }
+
+
+
+#include <iostream>
+#include <vector>
+using namespace std;
+using ll = long long;
+
+const ll MOD = 1000000007;
+const ll MOD_EXP = 1000000006; // 指数层面的模数 (M-1)
+const ll INV2 = 500000004;    // 2的模逆元
+
+ll sum_range(ll a, ll b) {
+    ll first_plus_last = (a + b) % MOD;
+    ll count = (b - a + 1) % MOD;
+    return first_plus_last * count % MOD * INV2 % MOD;
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    ll n;
+    cin >> n;
+
+    ll total_sum = 0;
+
+    for(ll k = 1; k * k <= n; k++) {
+        ll count = (n / k) % MOD;
+        ll value = k % MOD;
+        total_sum = (total_sum + (count * value) % MOD) % MOD;
+    }
+
+    for (ll k = 1; n / k > k; k++) {
+        ll R = n / k;
+        ll L = n / (k + 1) + 1;
+        ll block_sum = sum_range(L, R);
+        ll contribution = (block_sum * (k % MOD)) % MOD;
+        total_sum = (total_sum + contribution) % MOD;
+    }
+    cout << total_sum << "\n";
+
+    return 0;
+}
