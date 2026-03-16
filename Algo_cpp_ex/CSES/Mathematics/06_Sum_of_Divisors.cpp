@@ -204,7 +204,6 @@ using namespace std;
 using ll = long long;
 
 const ll MOD = 1000000007;
-const ll MOD_EXP = 1000000006; // 指数层面的模数 (M-1)
 const ll INV2 = 500000004;    // 2的模逆元
 
 ll sum_range(ll a, ll b) {
