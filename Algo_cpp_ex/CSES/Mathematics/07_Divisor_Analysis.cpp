@@ -1,8 +1,63 @@
+/*
+Divisor Analysis — CSES Problem (Original statement)
 
+Given an integer, your task is to find the number, sum and product of its
+divisors. As an example, let us consider the number 12:
+
+    • the number of divisors is 6 (they are 1, 2, 3, 4, 6, 12)
+    • the sum of divisors is 1+2+3+4+6+12=28
+    • the product of divisors is 1⋅2⋅3⋅4⋅6⋅12=1728
+
+Since the input number may be large, it is given as a prime factorization.
+
+Input
+The first line has an integer n: the number of parts in the prime factorization.
+After this, there are n lines that describe the factorization. Each line has two
+numbers x and k where x is a prime and k is its power.
+
+Output
+Print three integers modulo 10^9+7: the number, sum and product of the divisors.
+
+Constraints
+1 ≤ n ≤ 10^5
+2 ≤ x ≤ 10^6 (each x is a distinct prime)
+1 ≤ k ≤ 10^9
+
+Example
+Input:
+2
+2 2
+3 1
+
+Output:
+6 28 1728
+
+中文翻译：
+题目：约数分析
+
+给定一个整数，你的任务是求出该整数的约数的个数、约数之和以及约数之积。
+由于输入的数可能很大，输入以质因数分解的形式给出。
+
+输入格式
+第一行包含一个整数 n：表示质因数分解的项数。
+接下来有 n 行，每行有两个整数 x 和 k，x 为质数，k 为该质数的幂次。
+
+输出格式
+输出三个整数（对 10^9+7 取模）：约数的个数、约数之和与约数之积。
+
+示例
+输入：
+2
+2 2
+3 1
+
+输出：
+6 28 1728
+
+来源: https://cses.fi/problemset/task/2182/
+*/
 /*
 太棒了！理解约数之和定理的推导，是吃透这道题最核心的一步。
-
-
 ---
 
 一、 约数之和的数学原理推导
