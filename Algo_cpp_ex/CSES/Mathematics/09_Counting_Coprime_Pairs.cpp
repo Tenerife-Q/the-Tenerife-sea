@@ -177,6 +177,9 @@ int main() {
 // }
 
 
+
+
+// Solution1: Inclusion-Exclusion Principle (容斥原理) + Prime Factorization (质因数分解)
 #include <iostream>
 #include <vector>
 using namespace std;
@@ -219,4 +222,49 @@ int main() {
     }
 
     cout << (n * ll(n - 1) / 2) - answer << "\n";
+}
+
+
+
+
+// Solution2: Möbius Function (莫比乌斯函数) + Divisor Counting (约数计数)
+#include <iostream>
+#include <vector>
+using namespace std;
+using ll = long long;
+const int N = 1000000;
+
+int main() {
+    vector<int> mu(N + 1, 1);
+    vector<int> skip(N + 1);
+    for (int d = 2; d <= N; d++) {
+        if (skip[d]) continue;
+        for (int i = d; i <= N; i += d) {
+            skip[i] = 1;
+            if (i % (d * d) == 0) mu[i] = 0;
+            mu[i] = -mu[i];
+        }
+    }
+
+    int n;
+    cin >> n;
+    vector<int> count(N + 1);
+    for (int i = 1; i <= n; i++) {
+        int x;
+        cin >> x;
+        count[x]++;
+    }
+
+    vector<int> div(N + 1);
+    for (int d = 1; d <= N; d++) {
+        for (int i = d; i <= N; i += d) {
+            div[d] += count[i];
+        }
+    }
+
+    ll answer = 0;
+    for (int d = 1; d <= N; d++) {
+        answer += mu[d] * (ll)div[d] * div[d];
+    }
+    cout << (answer - count[1]) / 2 << "\n";
 }
