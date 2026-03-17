@@ -135,3 +135,44 @@ int main() {
 
     cout << answer << "\n";
 }
+
+
+// 综合前两个版本优化的版本。
+#include <iostream>
+#include <vector>
+using namespace std;
+using ll = long long;
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    ll n;
+    int k;
+    cin >> n >> k;
+    vector<ll> primes(k);
+    for (int i = 0; i < k; i++) {
+        cin >> primes[i];
+    }
+
+    ll ans = 0;
+    for (int mask = 1; mask < (1 << k); ++mask) {
+        ll current_prod = 1;
+        bool overflow = false;
+        for(int i = 0; i < k; ++i) {
+            if(mask & (1 << i)) {
+                if(current_prod > 0 && n / current_prod < primes[i]) {
+                    overflow = true;
+                    break;
+                }
+                current_prod *= primes[i];
+            }
+        }
+        if(!overflow) {
+            ll count = n / current_prod;
+            if(__builtin_popcount(mask) % 2 == 1) ans += count;
+            else ans -= count;
+        }
+    }
+    cout << ans << "\n";
+}
