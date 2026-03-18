@@ -33,60 +33,6 @@
  * ==============================================================================
  */
 
-#include <iostream>
-
-using namespace std;
-
-// 高效判断一个数是否为素数，时间复杂度 O(√n)
-bool is_prime(long long n) {
-    // 0 和 1 不是素数
-    if (n <= 1) return false;
-    // 2 和 3 是素数
-    if (n <= 3) return true;
-    
-    // 排除掉所有 2 和 3 的倍数
-    if (n % 2 == 0 || n % 3 == 0) return false;
-    
-    // 6k±1 优化：从 5 开始，每次步长进 6 (即判断 5, 7, 11, 13...)
-    // 条件 i*i <= n 可以避免使用 sqrt() 带来的浮点数精度问题和性能损耗
-    for (long long i = 5; i * i <= n; i += 6) {
-        if (n % i == 0 || n % (i + 2) == 0) {
-            return false;
-        }
-    }
-    
-    return true;
-}
-
-void solve() {
-    long long n;
-    cin >> n;
-    
-    // 题目要求 finding the next prime after it，即严格大于 n
-    long long p = n + 1;
-    
-    // 不断向后寻找，直到遇到素数
-    while (!is_prime(p)) {
-        p++;
-    }
-    
-    cout << p << "\n";
-}
-
-int main() {
-    // 优化标准 C++ 的 I/O 速度，防止在读写大量数据时超时
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-    
-    int t;
-    if (cin >> t) {
-        while (t--) {
-            solve();
-        }
-    }
-    
-    return 0;
-}
 
 /*
  * ==============================================================================
