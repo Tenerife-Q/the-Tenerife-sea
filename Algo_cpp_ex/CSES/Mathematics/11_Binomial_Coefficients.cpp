@@ -106,3 +106,60 @@ int main() {
     
     return 0;
 }
+
+
+
+#include <iostream>
+#include <vector>
+
+using namespace std;
+using ll = long long;
+
+const int MOD = 1e9 + 7;
+const int MAX = 1e6;
+
+ll fact[MAX + 1];
+ll invFact[MAX + 1];
+
+ll power(ll a, ll b) {
+    if(b == 0) return 1;
+    ll res = power(a, b / 2);
+    res = (res * res) % MOD;
+    if(b % 2 == 1) res = (res * a) % MOD;
+    return res;
+}
+
+void precompute() {
+    fact[0] = 1;
+    for(int i = 1; i <= MAX; i++) {
+        fact[i] = (fact[i - 1] * i) % MOD;
+    }
+
+    invFact[MAX] = power(fact[MAX], MOD - 2);
+    for(int i = MAX -1; i >= 0; i--) {
+        invFact[i] = (invFact[i + 1] * (i + 1)) % MOD;
+    }
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    precompute();
+
+    int n;
+    cin >> n;
+    while(n--) {
+        int a, b;
+        cin >> a >> b;
+        if(b > a || b < 0) {
+            cout << 0 << "\n";
+            continue;
+        }
+
+        ll ans = fact[a];
+        ans = (ans * invFact[b]) % MOD;
+        ans = (ans * invFact[a - b]) % MOD;
+        cout << ans << "\n";
+    }
+    return 0;
+}
