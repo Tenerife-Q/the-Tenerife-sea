@@ -412,25 +412,19 @@ $$ [n = 1] = \sum_{d \mid n} \mu(d) $$
 现在我们回到题目，我们要计算所有的互质对。为了方便推导，我们先**不区分** i 和 j 的大小，并且允许 i = j。
 我们的目标是求：
 
-```latex
-	ext{Total} = \sum_{i=1}^n \sum_{j=1}^n [\gcd(x_i, x_j) = 1]
-```
+Total = Σ_{i=1..n} Σ_{j=1..n} [gcd(x_i, x_j) = 1]
 
 **1. 引入莫比乌斯魔法公式：**
 因为 \(\gcd(x_i, x_j)\) 也是一个正整数，我们可以把上面的 \([n=1]\) 公式里的 \(n\) 替换成 \(\gcd(x_i, x_j)\)：
 
-```latex
-	ext{Total} = \sum_{i=1}^n \sum_{j=1}^n \left( \sum_{d \mid \gcd(x_i, x_j)} \mu(d) \right)
-```
+Total = Σ_{i=1..n} Σ_{j=1..n} ( Σ_{d | gcd(x_i, x_j)} μ(d) )
 
 **2. 转化整除条件：**
 一个数 \(d\) 能整除 \(\gcd(x_i, x_j)\)，等价于 **\(d\) 同时能整除 \(x_i\) 和 \(x_j\)**。
 所以条件 \(d \mid \gcd(x_i, x_j)\) 可以写成：`[d | x_i] * [d | x_j]` （两者都成立时乘积才为 1）。
 公式变成：
 
-```latex
-	ext{Total} = \sum_{i=1}^n \sum_{j=1}^n \sum_{d=1}^N \mu(d) \times [d \mid x_i] \times [d \mid x_j]
-```
+Total = Σ_{i=1..n} Σ_{j=1..n} Σ_{d=1..N} μ(d) * [d | x_i] * [d | x_j]
 
 *(这里的 N 是数组中的最大值，因为 d 不可能超过数组中的最大元素)*
 
