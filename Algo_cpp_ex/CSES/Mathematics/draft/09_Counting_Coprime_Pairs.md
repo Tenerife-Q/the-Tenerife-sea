@@ -437,19 +437,28 @@ $$
 **3. 交换求和顺序（最神妙的一步）：**
 与其先枚举 $i$ 和 $j$，然后再找它们的公约数 $d$，**不如我们先枚举约数 $d$**！
 我们将 $\sum_{d=1}^N$ 提到最外面：
-$$ \text{Total} = \sum_{d=1}^N \mu(d) \left( \sum_{i=1}^n \sum_{j=1}^n [d \mid x_i] \times [d \mid x_j] \right) $$
+
+$$
+\text{Total} = \sum_{d=1}^N \mu(d) \left( \sum_{i=1}^n \sum_{j=1}^n[d \mid x_i] \times [d \mid x_j] \right)
+$$
 
 **4. 提取公因式：**
 注意括号里的部分！$\sum_{i=1}^n[d \mid x_i]$ 和 $\sum_{j=1}^n [d \mid x_j]$ 是完全独立的！
 这就好比 $\sum \sum X \cdot Y = (\sum X) \cdot (\sum Y)$。
-$$ \text{Total} = \sum_{d=1}^N \mu(d) \left( \sum_{i=1}^n [d \mid x_i] \right) \left( \sum_{j=1}^n [d \mid x_j] \right) $$
+
+$$
+\text{Total} = \sum_{d=1}^N \mu(d) \left( \sum_{i=1}^n [d \mid x_i] \right) \left( \sum_{j=1}^n [d \mid x_j] \right)
+$$
 
 这两个括号里的东西是完全一样的！**$\sum_{i=1}^n [d \mid x_i]$ 的物理意义是什么？**
 **就是整个数组 $X$ 中，有多少个数是 $d$ 的倍数！**
 
 我们令 $C(d) = \sum_{i=1}^n[d \mid x_i]$ （在你的代码里，这个 $C(d)$ 就是 `div[d]` 数组）。
 最终公式变成了极简的形式：
-$$ \text{Total} = \sum_{d=1}^N \mu(d) \times C(d)^2 $$
+
+$$
+\text{Total} = \sum_{d=1}^N \mu(d) \times C(d)^2
+$$
 
 ---
 
