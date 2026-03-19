@@ -1,3 +1,64 @@
+/*
+Creating Strings II — 题目与算法分析（中英双语注释）
+
+Problem (English)
+------------------
+Given a string, your task is to calculate the number of different strings that can be created using its characters.
+
+Input
+The only input line has a string of length n. Each character is between a–z.
+
+Output
+Print the number of different strings modulo 10^9 + 7.
+
+Constraints
+1 ≤ n ≤ 10^6
+
+Example
+Input: aabac
+Output: 20
+
+题目（中文）
+------------------
+给定一个字符串，你的任务是计算使用其字符可以组成多少种不同的字符串。
+
+输入
+唯一的一行输入包含一个长度为 n 的字符串。每个字符都是 a 到 z 之间的小写字母。
+
+输出
+打印可以组成的不同字符串的数量，结果对 10^9+7 取模。
+
+样例
+输入：
+aabac
+
+输出：
+20
+
+算法分析（要点）
+------------------
+1) 数学模型（多重集的全排列）
+   设字符串长度为 n，字符 a 出现 c0 次，b 出现 c1 次，…，z 出现 c25 次。
+   不同排列数为： n! / (c0! * c1! * ... * c25!)。
+
+2) 模运算下的除法（乘法逆元）
+   由于要求对 MOD = 10^9+7 取模，不能直接做除法。利用费马小定理，x^{-1} ≡ x^{MOD-2} (mod MOD)。
+
+3) O(n) 预处理阶乘与逆元
+   - 先正向计算 fact[i] = i! (mod MOD)。
+   - 用快速幂计算 invFact[n] = (fact[n])^{MOD-2}。
+   - 逆向递推得到 invFact[i-1] = invFact[i] * i (mod MOD)，从而得到所有阶乘的逆元。
+
+4) 计算答案
+   最终答案为 fact[n] 乘以每个字符计数的 invFact[count] 的乘积（模 MOD）。
+
+复杂度
+   时间：O(n) 预处理 + O(26) 统计与乘积，整体 O(n)。
+   空间：O(n)（用于保存阶乘与逆元数组）。
+
+下面保留原实现代码（已存在，不作改动）。
+*/
+
 #include <iostream>
 #include <string>
 #include <vector>
