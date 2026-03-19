@@ -131,3 +131,55 @@ int main() {
     
     return 0;
 }
+
+
+#include <iostream>
+#include <vector>
+#include <string>
+using namespace std;
+using ll = long long;
+
+const int MOD = 1e9 + 7;
+const int MAXN = 1e6 + 5;
+
+ll fact[MAXN];
+ll invFact[MAXN];
+
+ll power(ll a, ll b) {
+    if(b == 0) return 1;
+    ll res = power(a, b / 2);
+    res = (res * res) % MOD;
+    if(b % 2 == 1) res = (res * a) % MOD;
+    return res;
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    
+    string s;
+    cin >> s;
+    int n = s.length();
+    fact[0] = 1;
+    for(int i = 1; i <= n; i++) {
+        fact[i] = (fact[i - 1] * i) % MOD;
+    }
+    invFact[n] = power(fact[n], MOD - 2);
+    for(int i = n - 1; i >= 0; i--) {
+        invFact[i] = (invFact[i + 1] * (i + 1)) % MOD;
+    }
+
+    int counts[26] = {0};
+    for (char c : s) {
+        counts[c - 'a']++;
+    }
+
+    ll ans = fact[n];
+    for(int i = 0; i < 26; i++) {
+        ans = (ans * invFact[counts[i]]) % MOD;
+    }
+
+    cout << ans << "\n";
+
+    return 0;
+}
