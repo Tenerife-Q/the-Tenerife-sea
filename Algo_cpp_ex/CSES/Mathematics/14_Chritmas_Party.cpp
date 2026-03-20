@@ -119,11 +119,11 @@ int main() {
     int n;
     cin >> n;
 
-    count[0] = 1; // D(0) = 1
-    count[1] = 0; // D(1) = 0
+    count[1] = 0; 
+    count[2] = 1;
 
-    for(int i = 2; i <= n; ++i) {
-        count[i] = (i * count[i - 1] + (i % 2 == 0 ? 1 : -1) + MOD) % MOD;
+    for(int i = 3; i <= n; ++i) {
+        count[i] = (i - 1) * (count[i - 1] + count[i - 2]) % MOD;
     }
     cout << count[n] << "\n";
 
