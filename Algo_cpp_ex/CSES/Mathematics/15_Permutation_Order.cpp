@@ -210,6 +210,10 @@ int main() {
     }
 }
 
+
+
+
+
 #include <iostream>
 #include <vector>
 #include <numeric>   // 提供 iota
@@ -291,6 +295,70 @@ int main() {
     if (cin >> t) {
         while (t--) {
             solve();
+        }
+    }
+    return 0;
+}
+
+
+
+
+
+#include <iostream>
+#include <vector>
+#include <numeric>
+#include <algorithm>
+
+using namespace std;
+using ll = long long;
+
+const int N = 20;
+ll fact[N + 1];
+
+void precompute() {
+    fact[0] = 1;
+    for (int i = 1; i <= N; ++i) {
+        fact[i] = fact[i - 1] * i;
+    }
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    precompute();
+
+    int t;
+    cin >> t;
+    while (t--) {
+        int op, n;
+        cin >> op >> n;
+        vector<int> numbers(n);
+        iota(numbers.begin(), numbers.end(), 1);
+
+        if(op == 1) {
+            ll k;
+            cin >> k;
+            k--;
+            for (int i = 0; i < n; ++i) {
+                ll f = fact[n - 1 - i];
+                int idx = k / f;
+                cout << numbers[idx] << (i == n - 1 ? "\n" : " ");
+                numbers.erase(numbers.begin() + idx);
+                k %= f;
+            }
+        } else if (op == 2) {
+            ll k = 1;
+            for (int i = 0; i < n; ++i) {
+                int x;
+                cin >> x;
+                ll f = fact[n - i - 1];
+                auto it = find(numbers.begin(), numbers.end(), x);
+                int idx = it - numbers.begin();
+                k += idx * f;
+                numbers.erase(it);
+            }
+            cout << k << "\n";
         }
     }
     return 0;
