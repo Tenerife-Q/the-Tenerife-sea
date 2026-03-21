@@ -184,3 +184,57 @@ int main() {
     }
     cout << result << "\n";
 }
+
+
+
+#include <iostream>
+#include <vector>
+using namespace std;
+using ll = long long;
+const int M = 1000000007;
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    int n;
+    cin >> n;
+
+    vector<int> p(n + 1);
+    for (int i = 1; i <= n; i++) {
+        cin >> p[i];
+    }
+
+    vector<int> max_power(n + 1);
+    for (int i = 1; i <= n; ++i) {
+        if(p[i] == 0) continue;
+        int pos = i;
+        int length = 0;
+        do {
+            length++;
+            int new_pos = p[pos];
+            p[pos] = 0;
+            pos = new_pos;
+        } while (pos != i);
+        
+        for (int x = 2; x * x <= length; ++x) {
+            int count = 0;
+            while (length % x == 0) {
+                length /= x;
+                count++;
+            }
+            max_power[x] = max(max_power[x], count);
+        }
+        if (length > 1) {
+            max_power[length] = max(max_power[length], 1);
+        }
+    }
+
+    ll res = 1;
+    for (int x = 2; x <= n; ++x) {
+        for(int i = 0; i < max_power[x]; ++i) {
+            res = (res * x) % M;
+        }
+    }
+    cout << res << "\n";
+}
