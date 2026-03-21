@@ -209,3 +209,89 @@ int main() {
         }
     }
 }
+
+#include <iostream>
+#include <vector>
+#include <numeric>   // 提供 iota
+#include <algorithm> // 提供 find
+
+using namespace std;
+using ll = long long; // 使用 using ll 替代 unsigned long long，代码更简短
+
+const int N = 20;
+ll fact[N + 1];
+
+// 预处理阶乘数组 (0! 到 20!)
+void precompute() {
+    fact[0] = 1;
+    for (int i = 1; i <= N; i++) {
+        fact[i] = fact[i - 1] * i;
+    }
+}
+
+void solve() {
+    int op, n;
+    cin >> op >> n;
+
+    // 技巧 1：使用 iota 优雅地初始化候选数字集合 {1, 2, ..., n}
+    vector<int> numbers(n);
+    iota(numbers.begin(), numbers.end(), 1); 
+
+    if (op == 1) {
+        // --- 操作 1: 已知序号 k 求排列 (逆康托展开) ---
+        ll k;
+        cin >> k;
+        k--; // 必须转换为 0-indexed 进行数学计算
+
+        for (int i = 0; i < n; i++) {
+            // 技巧 2：直接查表获取剩余位置的排列数 (n-1-i)!，比官方的除法 f/=n-i 更直观
+            ll f = fact[n - 1 - i]; 
+            
+            int idx = k / f; // 计算应该取候选集中的第几个数 (下标)
+            
+            cout << numbers[idx] << (i == n - 1 ? "" : " ");
+            
+            numbers.erase(numbers.begin() + idx); // 移除已使用的数字
+            k %= f; // 更新剩余需要跳过的排列数
+        }
+        cout << "\n";
+        
+    } else if (op == 2) {
+        // --- 操作 2: 已知排列求序号 k (康托展开) ---
+        ll k = 1; // 技巧 3：直接初始化为 1-indexed，最后输出时就不需要再 +1 了
+
+        for (int i = 0; i < n; i++) {
+            int x;
+            cin >> x;
+            
+            ll f = fact[n - 1 - i]; // 直接查表获取 (n-1-i)!
+            
+            // 技巧 4：使用 find 优雅地寻找数字 x 在候选集中的迭代器(指针)
+            auto it = find(numbers.begin(), numbers.end(), x);
+            
+            // 迭代器相减得到下标 idx，它完美代表了“前面有几个更小的可用数字被跳过了”
+            int idx = it - numbers.begin(); 
+            
+            k += idx * f; // 累加跳过的大类排列数
+            
+            numbers.erase(it); // 移除已处理的数字
+        }
+        cout << k << "\n";
+    }
+}
+
+int main() {
+    // 优化 C++ 的输入输出流速度，防止在多组数据时超时
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    precompute();
+
+    int t;
+    if (cin >> t) {
+        while (t--) {
+            solve();
+        }
+    }
+    return 0;
+}
