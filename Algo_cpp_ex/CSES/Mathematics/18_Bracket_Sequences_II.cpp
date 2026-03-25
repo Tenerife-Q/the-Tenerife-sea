@@ -146,3 +146,72 @@ int main() {
 
     return 0;
 }
+
+
+
+#include <iostream>
+#include <vector>
+using namespace std;
+using ll = long long;
+const int M = 1000000007;
+
+ll power(ll a, ll b) {
+    ll res = 1;
+    a %= M;
+    while (b > 0) {
+        if (b & 1) res = (res * a) % M;
+        a = (a * a) % M;
+        b >>= 1;
+    }
+    return res;
+}
+
+ll modInverse(ll a) {
+    return power(a, M - 2);
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    int n;
+    cin >> n;
+
+    string pre;
+    cin >> pre;
+
+    if (n % 2 != 0) {
+        cout << 0 << "\n";
+        return 0;
+    }
+
+    int open = 0, close = 0;
+    for (char c : pre) {
+        if(c == '(') open ++;
+        else close ++;
+        if (close > open) {
+            cout << 0 << "\n";
+            return 0;
+        }
+    }
+
+    if (open > n / 2 || close > n / 2) {
+        cout << 0 << "\n";
+        return 0;
+    }
+
+    int L = n / 2 - open;
+    int R = n / 2 - close;
+
+    vector<ll> fact(n + 2, 1);
+    for (int i = 1; i <= n; i++) {
+        fact[i] = (fact[i - 1] * i) % M;
+    }
+
+    ll fz = fact[L + R] * (R - L + 1) % M;
+    ll fm = (fact[L] * fact[R + 1]) % M;
+    ll ans = (fz * modInverse(fm)) % M;
+    cout << ans << "\n";
+
+    return 0;
+}
