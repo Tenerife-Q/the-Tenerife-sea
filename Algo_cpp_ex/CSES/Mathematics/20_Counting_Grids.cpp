@@ -91,3 +91,49 @@ int main() {
 
     return 0;
 }
+
+
+
+
+
+#include <iostream>
+using namespace std;
+using ll = long long;
+const int M = 1000000007;
+
+ll power(ll a, ll b) {
+    ll res = 1;
+    a %= M;
+    while (b > 0) {
+        if (b & 1) res = (res * a) % M;
+        a = (a * a) % M;
+        b >>= 1;
+    }
+    return res;
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    ll n;
+    cin >> n;
+
+    ll n2 = n * n;
+
+    ll e0 = n2;
+    ll e180 = (n2 + 1) / 2;
+    ll e90 = (n2 + 3) / 4;
+    ll e270 = e90;
+
+    ll sum = 0;
+    sum = (sum + power(2, e0)) % M;
+    sum = (sum + power(2, e180)) % M;
+    sum = (sum + power(2, e90)) % M;
+    sum = (sum + power(2, e270)) % M;
+
+    ll ans = (sum * power(4, M - 2)) % M;
+    cout << ans << "\n";
+    return 0;
+
+}
