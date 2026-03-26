@@ -104,3 +104,52 @@ int main() {
     
     return 0;
 }
+
+
+#include <iostream>
+using namespace std;
+using ll = long long;
+const int M = 1000000007;
+
+ll power(ll a, ll b) {
+    ll res = 1;
+    a %= M;
+    while (b > 0) {
+        if (b & 1) res = (res * a) % M;
+        a = (a * a) % M;
+        b >>= 1;
+    }
+    return res;
+}
+
+ll phi(ll x) {
+    ll res = x;
+    for (ll i = 2; i * i <= x; i++) {
+        if(x % i == 0) {
+            while (x % i == 0) x /= i;
+            res -= res / i;
+        }
+    }
+    if(x > 1) res -= res / x;
+    return res;
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    ll n, m;
+    cin >> n >> m;
+
+    ll ans = 0;
+    for (ll i = 1; i * i <= n; i++) {
+        if (n % i == 0) {
+            ans = (ans + phi(n / i) % M * power(m, i)) % M;
+            if (i * i != n) {
+                ans = (ans + phi(n / (n / i)) % M * power(m, n / i)) % M;
+            }
+        }
+    }
+    ans = (ans * power(n, M - 2)) % M;
+    cout << ans << "\n";
+}
