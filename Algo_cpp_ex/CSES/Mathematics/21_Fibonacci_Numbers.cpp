@@ -109,3 +109,35 @@ int main() {
     auto p = m.power(n);
     cout << p.m[0][1] << "\n";
 }
+
+
+
+
+// solution using fast doubling method with memoization
+#include <iostream>
+#include <map>
+using namespace std;
+using ll = long long;
+const int M = 1000000007;
+
+map<ll, ll> dp;
+
+ll f(ll n) {
+    if (n <= 2) return n >= 1;
+    if (dp.count(n)) return dp[n];
+    auto a = f(n / 2);
+    auto b = f(n / 2 + 1);
+    if (n % 2 == 0) {
+        dp[n] = (2 * b - a) * a;
+    } else {
+        dp[n] = a * a + b * b;
+    }
+    dp[n] = (dp[n] % M + M) % M;
+    return dp[n];
+}
+
+int main() {
+    ll n;
+    cin >> n;
+    cout << f(n) << "\n";
+}
