@@ -37,56 +37,69 @@
    - 代码实现关注性能与取模安全（用 __int128 做中间乘法）。
 */
 
-#include <bits/stdc++.h>
+#include <iostream>
+#include <vector>
+
 using namespace std;
-using int64 = long long;
-const int64 MOD = 1000000007LL;
 
-using Matrix = array<array<int64,6>,6>;
+const long long MOD = 1e9 + 7;
 
-Matrix mul(const Matrix &A, const Matrix &B){
-    Matrix C{};
-    for(int i=0;i<6;++i){
-        for(int k=0;k<6;++k){
-            if (A[i][k]==0) continue;
-            __int128 av = A[i][k];
-            for(int j=0;j<6;++j){
-                if (B[k][j]==0) continue;
-                C[i][j] = (C[i][j] + (int64)((av * B[k][j]) % MOD)) % MOD;
+// 定义 6x6 矩阵类型
+typedef vector<vector<long long>> Matrix;
+
+// 矩阵乘法函数
+Matrix multiply(const Matrix& A, const Matrix& B) {
+    Matrix C(6, vector<long long>(6, 0));
+    for (int i = 0; i < 6; ++i) {
+        for (int k = 0; k < 6; ++k) {
+            // 优化：如果 A[i][k] 为 0，跳过内层循环
+            if (A[i][k] == 0) continue; 
+            for (int j = 0; j < 6; ++j) {
+                C[i][j] = (C[i][j] + A[i][k] * B[k][j]) % MOD;
             }
         }
     }
     return C;
 }
 
-Matrix matPow(Matrix base, unsigned long long exp){
-    Matrix R{};
-    for(int i=0;i<6;++i) R[i][i]=1;
-    while(exp){
-        if(exp&1) R = mul(R, base);
-        base = mul(base, base);
-        exp >>= 1;
+// 矩阵快速幂函数
+Matrix power(Matrix A, long long p) {
+    // 初始化为单位矩阵 (Identity Matrix)
+    Matrix res(6, vector<long long>(6, 0));
+    for (int i = 0; i < 6; ++i) {
+        res[i][i] = 1;
     }
-    return R;
+    
+    // 二进制拆分求幂
+    while (p > 0) {
+        if (p & 1) {
+            res = multiply(res, A);
+        }
+        A = multiply(A, A);
+        p >>= 1;
+    }
+    return res;
 }
 
-int main(){
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-
-    unsigned long long n;
-    if(!(cin>>n)) return 0;
-
-    // Build transition matrix M (6x6)
-    Matrix M{};
-    // first row: a_{t+1} = sum a_t..a_{t-5}
-    for(int j=0;j<6;++j) M[0][j]=1;
-    // shift rows
-    for(int i=1;i<6;++i) M[i][i-1]=1;
-
-    // v0 = [a0, a_{-1},...,a_{-5}]^T = [1,0,0,0,0,0]
-    // a_n is first element of M^n * v0, which equals (M^n)[0][0]
-    Matrix P = matPow(M, n);
-    cout << (P[0][0] % MOD + MOD) % MOD << '\n';
+int main() {
+    // 优化输入输出流
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+    
+    long long n;
+    if (!(cin >> n)) return 0;
+    
+    // 构建基础转移矩阵 M
+    Matrix M(6, vector<long long>(6, 0));
+    for (int j = 0; j < 6; ++j) M[0][j] = 1;
+    for (int i = 1; i < 6; ++i) M[i][i - 1] = 1;
+    
+    // 计算 M^n
+    Matrix Mn = power(M, n);
+    
+    // 初始列向量 V_0 = [1, 0, 0, 0, 0, 0]^T
+    // 答案 f(n) 即为 Mn 乘以 V_0 后的第一行元素，等价于 Mn[0][0] * 1
+    cout << Mn[0][0] << "\n";
+    
     return 0;
 }
