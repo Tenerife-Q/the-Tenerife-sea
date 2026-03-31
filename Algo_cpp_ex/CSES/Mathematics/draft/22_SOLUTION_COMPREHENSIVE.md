@@ -1,4 +1,4 @@
-# 掷骰子问题完整解析 | Matrix Exponentiation教学版
+# 掷骰子问题完整解析 | Matrix Exponentiation教学版 总结但不完善 可渲染版
 
 > **题目来源**：CSES - Throwing Dice  
 > **难度**：中等偏难 | **核心技能**：矩阵快速幂 + 线性递推  
