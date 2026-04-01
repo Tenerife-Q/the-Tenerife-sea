@@ -219,6 +219,9 @@
 // }
 
 
+
+
+/*
 #include <iostream>
 #include <algorithm> // 为了使用 min
 
@@ -310,4 +313,84 @@ int main() {
     }
 
     return 0;
+}
+*/
+
+
+
+
+#include <iostream>
+#include <vector>
+using namespace std;
+using ll = long long;
+const ll INF = 2e18;
+
+template <int N>
+struct Matrix {
+    ll m[N][N];
+
+    // 【为什么这里必须手写构造函数？】
+    // 本题求最短路径，矩阵的默认初始状态应该是无穷大（INF），否则在做 min() 运算时会全错。
+    // 由于 C++ 的 {} 语法只能清零，无法一键填充 INF，
+    // 因此必须手写带有默认参数的构造函数：传参时（如 Matrix<N> g(INF)）全填INF，不传参时默认填0。
+    Matrix<N>(ll x = 0) {
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                m[i][j] = x;
+            }
+        }
+    }
+
+    static Matrix<N> ident() {
+        Matrix<N> r(INF);
+        for (int i = 0; i < N; i++) r.m[i][i] = 0;
+        return r;
+    }
+
+    Matrix<N> operator*(const Matrix<N> &b) const {
+        Matrix<N> r(INF);
+        // 这里还是应该采用 i -> k -> j 的循环顺序，完美契合 CPU 缓存，详见md文讲解
+        for (int i = 0; i < N; ++i) {
+            for (int j = 0; j < N; ++j) {
+                for (int k = 0; k < N; ++k) {
+                    r.m[i][j] = min(r.m[i][j], m[i][k] + b.m[k][j]);
+                }
+            }
+        }
+        return r;
+    }
+
+    // 这里使用递归版本的快速幂，代码更简洁
+    // Matrix<N> power(ll b) const {
+    //     Matrix<N> res = ident();
+    //     Matrix<N> a = *this;
+    //     while (b > 0) {
+    //         if (b & 1) res = res * a;
+    //         a = a * a;
+    //         b >>= 1;
+    //     }
+    //     return res;
+    // }
+    Matrix<N> power(ll b) {
+        if (b == 0) return ident();
+        auto a = *this;
+        return b & 1 ? a.power(b - 1) * a : (a * a).power(b / 2);
+    }
+};
+
+int main() {
+    int n, m, k;
+    cin >> n >> m >> k;
+
+    Matrix<101> g(INF);
+    for (int i = 1; i <= m; i++) {
+        int a, b, c;
+        cin >> a >> b >> c;
+        g.m[a][b] = min(g.m[a][b], (ll)c);
+    }
+
+    auto p = g.power(k);
+    ll answer = p.m[1][n];
+    if (answer == INF) answer = -1;
+    cout << answer << "\n";
 }

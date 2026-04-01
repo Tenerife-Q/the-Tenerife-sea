@@ -462,6 +462,9 @@ template <int N>
 struct Matrix {
     ll m[N][N];
 
+    // 【为什么这里不需要手写构造函数？】
+    // C++的 {} 初始化（如 Matrix<N> r{}）会自动将数组 m[N][N] 全部清零。
+    // 本题求路径数量，无边时的初始值恰好是0，直接使用 {} 一键清零即可，完美契合需求而省去了构造函数。
     static Matrix<N> ident() {
         Matrix<N> r{};
         for (int i = 0; i< N; i++) r.m[i][i] = 1;
