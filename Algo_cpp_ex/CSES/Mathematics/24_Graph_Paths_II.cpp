@@ -225,7 +225,7 @@
 using namespace std;
 using ll = long long;
 
-const ll INF = 1e18; // 使用一个足够大的数代表无穷，防止加法溢出
+const ll INF = 4e18; // 使用一个足够大的数代表无穷，防止加法溢出
 const int MAXN = 105;
 
 struct Matrix {
