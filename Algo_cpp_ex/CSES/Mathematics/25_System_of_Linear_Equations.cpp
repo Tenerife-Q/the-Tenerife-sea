@@ -145,6 +145,9 @@
 //     return 0;
 // }
 
+
+
+// 暴力+特解 更灵活
 #include <iostream>
 #include <vector>
 using namespace std;
@@ -243,4 +246,96 @@ int main() {
     }
     cout << "\n";
     return 0;
+}
+
+
+
+
+// 经典做法 更模板
+#include <iostream>
+#include <vector>
+using namespace std;
+using ll = long long;
+const int MOD = 1e9 + 7;
+
+ll power(ll base, ll exp) {
+    ll res = 1;
+    base %= MOD;
+    while (exp > 0) {
+        if (exp & 1) res = res * base % MOD;
+        base = base * base % MOD;
+        exp >>= 1;
+    }
+    return res;
+}
+
+ll inverse(ll x) {
+    return power(x, MOD - 2);
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    int n, m;
+    if (!(cin >> n >> m)) return 0;
+
+    vector<vector<ll>> a(n, vector<ll>(m + 1));
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j <= m; ++j) {
+            cin >> a[i][j];
+            a[i][j] %= MOD;
+        }
+    }
+
+    int r = 0; // 当前处理的行数 (秩)
+    vector<int> pivot_col;
+
+    for (int c = 0; c < m; ++c) {
+        int pivot = r;
+        while (pivot < n && a[pivot][c] == 0) {
+            pivot++;
+        }
+        
+        if (pivot == n) continue;
+
+        swap(a[r], a[pivot]);
+
+        ll inv = inverse(a[r][c]);
+        for (int j = c; j <= m; ++j) {
+            a[r][j] = a[r][j] * inv % MOD;
+        }
+
+        for (int i = 0; i < n; ++i) {
+            if (i != r && a[i][c] != 0) {
+                ll factor = a[i][c];
+                for (int j = c; j <= m; ++j) {
+                    a[i][j] = (a[i][j] - factor * a[r][j]) % MOD;
+                    if (a[i][j] < 0) a[i][j] += MOD;
+                }
+            }
+        }
+
+        pivot_col.push_back(c);
+        r++;
+    }
+
+    for (int i = r; i < n; ++i) {
+        if (a[i][m] != 0) {
+            cout << -1 << "\n";
+            return 0;
+        }
+    }
+
+    vector<ll> ans(m, 0);
+    for (int i = 0; i < r; ++i) {
+        ans[pivot_col[i]] = a[i][m];
+    }
+    
+    for (int i = 0; i < m; ++i) {
+        cout << ans[i] << " ";
+    }
+    cout << "\n";
+    return 0;
+
 }
