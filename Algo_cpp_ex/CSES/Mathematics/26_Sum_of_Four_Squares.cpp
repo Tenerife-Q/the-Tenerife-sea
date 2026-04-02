@@ -114,3 +114,110 @@ int main() {
     }
     return 0;
 }
+
+
+
+// 空间换时间
+#include <iostream>
+#include <vector>
+using namespace std;
+
+// 题目规定的 n 的最大值 10^7
+const int N = 10000000;
+
+// 把数组开在全局变量区（堆区），防止爆栈
+// can[x] 为 true 表示 x 可以表示为两个数的平方和
+bool can[N + 1];
+// first[x] 和 second[x] 记录具体的这两个数
+int first_num[N + 1];
+int second_num[N + 1];
+
+void precompute() {
+    // a 从 0 开始，a^2 不超过 N
+    for (int a = 0; a * a <= N; a++) {
+        // 优化点 1：b 从 a 开始枚举，避免 1^2+2^2 和 2^2+1^2 的重复计算
+        for (int b = a; a * a + b * b <= N; b++) {
+            int x = a * a + b * b;
+            can[x] = true;
+            first_num[x] = a;
+            second_num[x] = b;
+        }
+    }
+}
+
+int main() {
+    // 优化点 3：解除 C++ 输入输出的绑定，极大地提升读写速度
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    // 1. 程序一开始，先打表预处理
+    precompute();
+
+    int t;
+    if (cin >> t) {
+        while (t--) {
+            int n;
+            cin >> n;
+            
+            // 2. 核心逻辑：n = x + (n - x)
+            // 优化点 2：只需遍历到 n / 2 即可，因为后面是对称的
+            for (int x = 0; x <= n / 2; x++) {
+                if (can[x] && can[n - x]) {
+                    // x 拆出来的 a 和 b
+                    cout << first_num[x] << " " << second_num[x] << " ";
+                    // (n-x) 拆出来的 c 和 d
+                    cout << first_num[n - x] << " " << second_num[n - x] << "\n";
+                    break; // 找到后立即退出循环
+                }
+            }
+        }
+    }
+    return 0;
+}
+
+
+/*
+#include <iostream>
+#include <vector>
+using namespace std;
+
+const int N  = 10000000;
+bool can[N + 1];
+int first[N + 1];
+int second[N + 1];
+
+void precompute() {
+    for (int a = 0; a * a <= N; a++) {
+        for (int b = a; a * a + b * b <= N; b++) {
+            int x = a * a + b * b;
+            can[x] = true;
+            first[x] = a;
+            second[x] = b;
+        }
+    }
+}
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    precompute();
+
+    int t;
+    if (cin >> t) {
+        while (t--) {
+            int n;
+            cin >> n;
+            for (int x = 0; x <= n / 2; x++) {
+                if (can[x] && can[n - x]) {
+                    cout << first[x] << " " << second[x] << " " ;
+                    cout << first[n - x] << " " << second[n - x] << "\n";
+                    break;
+                }
+            }
+        }
+    }
+
+    return 0;
+}
+*/
