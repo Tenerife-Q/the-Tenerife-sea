@@ -145,7 +145,7 @@
 
 
 
-
+// 1. 纯数学解法，基于数论定理，时间复杂度 O(√n) 级别
 #include <iostream>
 #include <cmath>
 
@@ -217,6 +217,123 @@ void solve() {
 
 int main() {
     // 提升 cin/cout 读写速度，防止在多组数据时超时
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    int t;
+    if (cin >> t) {
+        while (t--) {
+            solve();
+        }
+    }
+    return 0;
+}
+
+
+
+// 2. 预处理法，空间换时间，适用于 n 较小的情况（如 n ≤ 10^7）算法竞赛双指针法
+#include <algorithm>
+#include <iostream>
+#include <vector>
+using namespace std;
+using ll = long long;
+
+int main() {
+    int t;
+    cin >> t;
+
+    vector<ll> triangles;
+    ll triangle = 0;
+    for (int i = 1;; i++) {
+        triangle += i;
+        if (triangle > 1e12) break;
+        triangles.push_back(triangle);
+    }
+
+    while (t--) {
+        ll n;
+        cin >> n;
+
+        if (find(triangles.begin(), triangles.end(), n) != triangles.end()) {
+            cout << "1\n";
+            continue;
+        }
+
+        bool found = false;
+
+        int right = triangles.size() - 1;
+        for (int left = 0; left <= right; left++) {
+            while (right > 0 && triangles[left] + triangles[right] > n) {
+                right--;
+            }
+            if (triangles[left] + triangles[right] == n) {
+                cout << "2\n";
+                found = true;
+                break;
+            }
+        }
+
+        if (!found) {
+            cout << "3\n";
+        }
+    }
+}
+
+
+
+#include <iostream>
+#include <cmath>
+using namespace std;
+using ll = long long;
+
+bool isPerfectSquare(ll x) {
+    if (x < 0) return false;
+    ll s = round(sqrt(x));
+    return s * s == x;
+}
+
+void solve() {
+    ll n;
+    cin >> n;
+
+    if (isPerfectSquare(8 * n + 1)) {
+        cout << 1 << "\n";
+        return;
+    }
+
+    ll N = 8 * n + 2;
+    while (N % 2 == 0) {
+        N /= 2;
+    }
+
+    bool possibleForTwo = true;
+    for (ll d = 3; d * d <= N; d += 2) {
+        if (N % d == 0) {
+            int count = 0;
+            while (N % d == 0) {
+                count++;
+                N /= d;
+            }
+            if (d % 4 == 3 && count % 2 != 0) {
+                possibleForTwo = false;
+                break;
+            }
+        }
+    }
+    
+    if (N > 1 && N % 4 == 3) {
+        possibleForTwo = false;
+    }
+
+    if (possibleForTwo) {
+        cout << 2 << "\n";
+        return;
+    }
+
+    cout << 3 << "\n";
+}
+
+int main() {
     ios_base::sync_with_stdio(false);
     cin.tie(NULL);
 
