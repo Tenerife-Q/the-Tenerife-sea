@@ -83,60 +83,148 @@
  * ============================================================================
  */
 
-#include<bits/stdc++.h>
+
+
+// #include<bits/stdc++.h>
+// using namespace std;
+
+// // Check if a number is a perfect square
+// bool isPerfectSquare(long long n) {
+//     if (n < 0) return false;
+//     long long sr = sqrt(n);
+//     // Check sr and sr±1 due to floating point precision
+//     return sr * sr == n || (sr + 1) * (sr + 1) == n;
+// }
+
+// // Check if n is a triangle number
+// // Triangle number T_k = k(k+1)/2
+// // To check: 8n + 1 should be a perfect square
+// // Because if k(k+1)/2 = n, then k^2 + k - 2n = 0
+// // k = (-1 + sqrt(1 + 8n)) / 2, so 8n + 1 must be perfect square
+// bool isTriangleNumber(long long n) {
+//     return isPerfectSquare(8 * n + 1);
+// }
+
+// // Find minimum number of triangle numbers that sum to n
+// int countMinTriangleNumbers(long long n) {
+//     // Case 1: n itself is a triangle number
+//     if (isTriangleNumber(n)) {
+//         return 1;
+//     }
+    
+//     // Case 2: n can be represented as sum of 2 triangle numbers
+//     // Check all triangle numbers up to n
+//     for (long long k = 1; k * (k + 1) / 2 <= n; k++) {
+//         long long triangleK = k * (k + 1) / 2;
+//         if (isTriangleNumber(n - triangleK)) {
+//             return 2;
+//         }
+//     }
+    
+//     // Case 3: By Legendre's theorem (generalized), every positive integer
+//     // can be represented as sum of at most 3 triangle numbers
+//     // If not 1 or 2, then it must be 3
+//     return 3;
+// }
+
+// int main() {
+//     ios_base::sync_with_stdio(false);
+//     cin.tie(nullptr);
+    
+//     int t;
+//     cin >> t;
+    
+//     while (t--) {
+//         long long n;
+//         cin >> n;
+//         cout << countMinTriangleNumbers(n) << "\n";
+//     }
+    
+//     return 0;
+// }
+
+
+
+
+#include <iostream>
+#include <cmath>
+
 using namespace std;
 
-// Check if a number is a perfect square
-bool isPerfectSquare(long long n) {
-    if (n < 0) return false;
-    long long sr = sqrt(n);
-    // Check sr and sr±1 due to floating point precision
-    return sr * sr == n || (sr + 1) * (sr + 1) == n;
+// 工具函数：判断一个数是否是完全平方数
+bool isPerfectSquare(long long x) {
+    if (x < 0) return false;
+    // 使用 round 防精度丢失
+    long long s = round(sqrt(x));
+    return s * s == x;
 }
 
-// Check if n is a triangle number
-// Triangle number T_k = k(k+1)/2
-// To check: 8n + 1 should be a perfect square
-// Because if k(k+1)/2 = n, then k^2 + k - 2n = 0
-// k = (-1 + sqrt(1 + 8n)) / 2, so 8n + 1 must be perfect square
-bool isTriangleNumber(long long n) {
-    return isPerfectSquare(8 * n + 1);
-}
+void solve() {
+    long long n;
+    cin >> n;
 
-// Find minimum number of triangle numbers that sum to n
-int countMinTriangleNumbers(long long n) {
-    // Case 1: n itself is a triangle number
-    if (isTriangleNumber(n)) {
-        return 1;
+    // --- 第一步：判断答案是否为 1 ---
+    // 根据推导，如果 8n + 1 是完全平方数，则 n 是三角形数
+    if (isPerfectSquare(8 * n + 1)) {
+        cout << 1 << "\n";
+        return;
     }
+
+    // --- 第二步：判断答案是否为 2 ---
+    // 根据推导，判断 8n + 2 是否可以写成两个平方数之和
+    // 定理：分解质因数后，所有 模4余3 的质因子，其指数必须是偶数
+    long long N = 8 * n + 2;
     
-    // Case 2: n can be represented as sum of 2 triangle numbers
-    // Check all triangle numbers up to n
-    for (long long k = 1; k * (k + 1) / 2 <= n; k++) {
-        long long triangleK = k * (k + 1) / 2;
-        if (isTriangleNumber(n - triangleK)) {
-            return 2;
+    // 把因数 2 先全部除干净（实际上 8n+2 只包含一个 2，因为 8n+2 = 2(4n+1)）
+    while (N % 2 == 0) {
+        N /= 2;
+    }
+
+    bool possibleForTwo = true;
+    
+    // 试除法进行质因数分解，从 3 开始，每次加 2（只看奇数）
+    for (long long d = 3; d * d <= N; d += 2) {
+        if (N % d == 0) {
+            int count = 0;
+            // 统计该质因子 d 出现的次数
+            while (N % d == 0) {
+                count++;
+                N /= d;
+            }
+            // 关键判断：如果 d 模 4 余 3，且出现的次数是奇数次
+            if (d % 4 == 3 && count % 2 != 0) {
+                possibleForTwo = false;
+                break; // 只要有一个不满足，就绝对不行
+            }
         }
     }
     
-    // Case 3: By Legendre's theorem (generalized), every positive integer
-    // can be represented as sum of at most 3 triangle numbers
-    // If not 1 or 2, then it must be 3
-    return 3;
+    // 循环结束后，如果 N 还没被除尽，说明剩下了一个大于 sqrt(8n+2) 的质因子。
+    // 该质因子只出现了 1 次（奇数次）。我们只需检查它是否模 4 余 3 即可。
+    if (N > 1 && N % 4 == 3) {
+        possibleForTwo = false;
+    }
+
+    if (possibleForTwo) {
+        cout << 2 << "\n";
+        return;
+    }
+
+    // --- 第三步：如果既不是 1 也不是 2 ---
+    // 根据高斯绝妙定理，必定是 3
+    cout << 3 << "\n";
 }
 
 int main() {
+    // 提升 cin/cout 读写速度，防止在多组数据时超时
     ios_base::sync_with_stdio(false);
-    cin.tie(nullptr);
-    
+    cin.tie(NULL);
+
     int t;
-    cin >> t;
-    
-    while (t--) {
-        long long n;
-        cin >> n;
-        cout << countMinTriangleNumbers(n) << "\n";
+    if (cin >> t) {
+        while (t--) {
+            solve();
+        }
     }
-    
     return 0;
 }
