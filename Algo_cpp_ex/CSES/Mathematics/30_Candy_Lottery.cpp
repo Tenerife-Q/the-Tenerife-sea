@@ -68,7 +68,9 @@ int main() {
 }
 */
 
-// 做法2 使用了黄金期望等式：E = sum( 1 - (i/k)^n ) , i 从 0 到 k-1
+
+/*
+做法2 使用了黄金期望等式：E = sum( 1 - (i/k)^n ) , i 从 0 到 k-1 但是还是有错
 #include <iostream>
 #include <cmath>
 #include <iomanip>
@@ -95,4 +97,62 @@ int main() {
     cout << fixed << setprecision(6) << (double)expected_max << "\n";
 
     return 0;
+}
+
+
+
+// 换掉 pow() 函数，直接用循环乘法来计算 (i/k)^n，还是报错
+#include <iostream>
+#include <iomanip>
+
+using namespace std;
+
+int main() {
+    // 优化 IO 速度
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    int n, k;
+    if (!(cin >> n >> k)) return 0;
+
+    double expected_max = 0.0;
+
+    // 黄金期望公式：E = sum( 1 - (i/k)^n )
+    for (int i = 0; i < k; i++) {
+        double p = 1.0;
+        
+        // 【核心修改】：用循环乘法代替 pow()，完美避开底层的精度丢失
+        for (int j = 0; j < n; j++) {
+            p *= (double)i / k;
+        }
+        
+        expected_max += 1.0 - p;
+    }
+
+    // fixed 配合 setprecision(6) 自动执行银行家舍入
+    cout << fixed << setprecision(6) << expected_max << "\n";
+
+    return 0;
+}
+*/
+
+// 没招了 都是错的
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int N, K;
+double ans, a, b;
+
+int main(){
+    scanf("%d %d", &N, &K);
+    for(int i = 1; i <= K; i++){
+        a = b = 1.0;
+        for(int j = 1; j <= N; j++){
+            a *= (double) i / K;
+            b *= (double) (i-1) / K;
+        }
+        ans += (a-b) * i;
+    }
+    printf("%.6f\n", ans);
 }
