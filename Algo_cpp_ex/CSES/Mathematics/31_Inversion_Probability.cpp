@@ -30,6 +30,57 @@ Output:
 1.057143
 */
 
+// #include <iostream>
+// #include <vector>
+// #include <iomanip>
+
+// using namespace std;
+
+// int main() {
+//     // 竞速级 IO 优化
+//     ios_base::sync_with_stdio(false);
+//     cin.tie(NULL);
+
+//     int n;
+//     if (!(cin >> n)) return 0;
+    
+//     // 全局数组思想：由于 n <= 100 很小，用 vector 也很稳，
+//     // 当然如果你写 int r[105]; 在外面也是极好的习惯。
+//     vector<int> r(n);
+//     for (int i = 0; i < n; i++) {
+//         cin >> r[i];
+//     }
+
+//     double expected_inversions = 0.0;
+
+//     // 两层循环，遍历所有可能的数字对 (i, j) 满足 i < j
+//     for (int i = 0; i < n; i++) {
+//         for (int j = i + 1; j < n; j++) {
+            
+//             double favorable = 0;
+            
+//             if (r[i] <= r[j]) {
+//                 // 情况 1：前者的范围较小
+//                 favorable = (double)r[i] * (r[i] - 1) / 2.0;
+//             } else {
+//                 // 情况 2：前者的范围较大
+//                 favorable = (double)r[j] * (r[j] - 1) / 2.0 + (double)(r[i] - r[j]) * r[j];
+//             }
+            
+//             // 总的组合数
+//             double total = (double)r[i] * r[j];
+            
+//             // 把这一对产生逆序对的概率累加到总期望中
+//             expected_inversions += favorable / total;
+//         }
+//     }
+
+//     // 保留 6 位小数输出
+//     cout << fixed << setprecision(6) << expected_inversions << "\n";
+
+//     return 0;
+// }
+
 #include <iostream>
 #include <vector>
 #include <iomanip>
@@ -44,38 +95,34 @@ int main() {
     int n;
     if (!(cin >> n)) return 0;
     
-    // 全局数组思想：由于 n <= 100 很小，用 vector 也很稳，
-    // 当然如果你写 int r[105]; 在外面也是极好的习惯。
-    vector<int> r(n);
+    vector<long double> r(n);
     for (int i = 0; i < n; i++) {
         cin >> r[i];
     }
 
-    double expected_inversions = 0.0;
+    // 必须使用 long double (80位/128位超高精度)
+    long double expected_inversions = 0.0;
 
-    // 两层循环，遍历所有可能的数字对 (i, j) 满足 i < j
     for (int i = 0; i < n; i++) {
         for (int j = i + 1; j < n; j++) {
             
-            double favorable = 0;
+            long double favorable = 0.0;
             
             if (r[i] <= r[j]) {
-                // 情况 1：前者的范围较小
-                favorable = (double)r[i] * (r[i] - 1) / 2.0;
+                // 注意这里的 1.0L 和 2.0L，带上 L 强制编译器不去做降维 double 计算
+                favorable = r[i] * (r[i] - 1.0L) / 2.0L;
             } else {
-                // 情况 2：前者的范围较大
-                favorable = (double)r[j] * (r[j] - 1) / 2.0 + (double)(r[i] - r[j]) * r[j];
+                favorable = r[j] * (r[j] - 1.0L) / 2.0L + (r[i] - r[j]) * r[j];
             }
             
-            // 总的组合数
-            double total = (double)r[i] * r[j];
+            long double total = r[i] * r[j];
             
-            // 把这一对产生逆序对的概率累加到总期望中
+            // 累加
             expected_inversions += favorable / total;
         }
     }
 
-    // 保留 6 位小数输出
+    // 完美契合出题人的输出结果
     cout << fixed << setprecision(6) << expected_inversions << "\n";
 
     return 0;
