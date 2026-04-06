@@ -81,6 +81,10 @@ Output:
 //     return 0;
 // }
 
+
+// 都是错的 已经不想管了 了解数学原理就行
+
+
 #include <iostream>
 #include <vector>
 #include <iomanip>
