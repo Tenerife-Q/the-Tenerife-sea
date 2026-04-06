@@ -26,6 +26,10 @@ Input:
 Output:
 2.444444
 */
+
+/*
+做法1 精度缺失出错 具体看draft
+
 #include <iostream>
 #include <cmath>
 #include <iomanip>
@@ -59,6 +63,36 @@ int main() {
 
     // 保留6位小数输出
     cout << fixed << setprecision(6) << expected_max << "\n";
+
+    return 0;
+}
+*/
+
+// 做法2 使用了黄金期望等式：E = sum( 1 - (i/k)^n ) , i 从 0 到 k-1
+#include <iostream>
+#include <cmath>
+#include <iomanip>
+
+using namespace std;
+
+int main() {
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    int n, k;
+    if (!(cin >> n >> k)) return 0;
+
+    // 使用 long double 保证绝不翻车
+    long double expected_max = 0.0;
+
+    // 根据黄金期望等式：E = sum( 1 - (i/k)^n ) , i 从 0 到 k-1
+    for (int i = 0; i < k; i++) {
+        // (long double) 强转保证除法和乘方在超高精度下进行
+        expected_max += 1.0 - pow((long double)i / k, n);
+    }
+
+    // C++ 中 fixed + setprecision 默认就是题目要求的 rounding half to even (四舍六入五成双)
+    cout << fixed << setprecision(6) << (double)expected_max << "\n";
 
     return 0;
 }
