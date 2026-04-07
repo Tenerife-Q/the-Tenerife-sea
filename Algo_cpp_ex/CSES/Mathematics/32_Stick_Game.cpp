@@ -72,3 +72,54 @@ int main() {
     
     return 0;
 }
+
+
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int main() {
+    int n, k;
+    cin >> n >> k;
+    vector<int> move(k);
+    for (int i = 0; i < k; i++) {
+        cin >> move[i];
+    }
+
+    string pos(n + 1, 'L');
+    for (int i = 1; i <= n; i++) {
+        for (auto m : move) {
+            if (i - m >= 0 && pos[i - m] == 'L') {
+                pos[i] = 'W';
+            }
+        }
+    }
+    cout << pos.substr(1) << "\n";
+    // 这里的 substr(1) 是为了去掉 pos 字符串开头的 'L'，只保留从索引 1 开始的部分，即对应 1 到 n 的棍子数量的结果。
+}
+
+
+
+#include <iostream>
+#include <vector>
+using namespace std;
+
+int main() {
+    int n, k;
+    cin >> n >> k;
+    vector<int> move(k);
+    for (int i = 0; i < k; i++) {
+        cin >> move[i];
+    }
+
+    string pos(n + 1, 'L');
+    for (int i = 1; i <= n; i++ ) {
+        for (int j = 0; j < k; j++) {
+            if( i - move[j] >= 0 && pos[i - move[j]] == 'L') {
+                pos[i] = 'W';
+                break;
+            }
+        }
+    }
+    cout << pos.substr(1) << "\n";
+}
