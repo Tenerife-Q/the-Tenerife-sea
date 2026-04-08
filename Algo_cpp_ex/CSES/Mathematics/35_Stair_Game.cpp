@@ -46,42 +46,64 @@ second
 first
 */
 
-#include <iostream>
-#include <vector>
+// #include <iostream>
+// #include <vector>
 
+// using namespace std;
+
+// void solve() {
+//     int n;
+//     cin >> n;
+//     int xor_sum = 0;
+//     for (int i = 1; i <= n; ++i) {
+//         int x;
+//         cin >> x;
+//         // This is equivalent to Staircase Nim. 
+//         // Coins on distance i-1 from the end. Only even indexed steps (i.e. distance 1, 3, 5...) matter.
+//         if (i % 2 == 0) {
+//             xor_sum ^= x;
+//         }
+//     }
+    
+//     if (xor_sum != 0) {
+//         cout << "first\n";
+//     } else {
+//         cout << "second\n";
+//     }
+// }
+
+// int main() {
+//     ios_base::sync_with_stdio(false);
+//     cin.tie(NULL);
+    
+//     int t;
+//     if (cin >> t) {
+//         while (t--) {
+//             solve();
+//         }
+//     }
+    
+//     return 0;
+// }
+
+
+
+#include <iostream>
 using namespace std;
 
-void solve() {
-    int n;
-    cin >> n;
-    int xor_sum = 0;
-    for (int i = 1; i <= n; ++i) {
-        int x;
-        cin >> x;
-        // This is equivalent to Staircase Nim. 
-        // Coins on distance i-1 from the end. Only even indexed steps (i.e. distance 1, 3, 5...) matter.
-        if (i % 2 == 0) {
-            xor_sum ^= x;
-        }
-    }
-    
-    if (xor_sum != 0) {
-        cout << "first\n";
-    } else {
-        cout << "second\n";
-    }
-}
-
 int main() {
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-    
     int t;
-    if (cin >> t) {
-        while (t--) {
-            solve();
+    cin >> t;
+
+    while (t--) {
+        int n;
+        cin >> n;
+        int sum = 0;
+        for (int i = 1; i <= n; i++) {
+            int x;
+            cin >> x;
+            if (i % 2 == 0) sum ^= x;
         }
+        cout << (sum != 0 ? "first" : "second") << "\n";
     }
-    
-    return 0;
 }
