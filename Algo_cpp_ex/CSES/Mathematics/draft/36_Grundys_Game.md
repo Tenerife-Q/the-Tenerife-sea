@@ -134,3 +134,83 @@ $$SG(n) = mex \Big( \{ SG(k) \oplus SG(n-k) \mid 1 \le k < \frac{n}{2} \} \Big)$
 但是有了这个神秘数字 $1222$，我们真正需要去运算计算 $SG$ 值的，只有 $n \le 2000$ 那些小测试数据而已。超出边界的一律大胆直接输出 `first` 即可，代码的空间和时间被这一个惊艳的世界真相压缩到了极致！
 
 这种数学上带有“悬疑而笃定”的巧合特性，也正是在刷组合博弈相关算法题目时，带给我们独特震撼和趣味的源泉之一。
+
+---
+
+### 五、 参考题解与代码实现 (Solutions)
+
+#### Solution 1: 暴力计算 SG 值 (O(N^2))
+令 $\text{grundy}[x]$ 表示包含 $x$ 枚硬币的堆的 SG 也就是 Grundy 值，并令 $\oplus$ 表示异或（XOR）运算符。
+当我们把一堆 $x$ 枚硬币分成 $a$ 和 $b$ 两堆时，会产生两个子游戏，它们的 Grundy 值分别是 $\text{grundy}[a]$ 和 $\text{grundy}[b]$。因此，移动后的整体 Grundy 值为 $\text{grundy}[a] \oplus \text{grundy}[b]$。
+
+为了计算 $\text{grundy}[x]$，我们遍历将 $x$ 枚硬币分成两堆的所有可能方式，计算每种移动后的 Grundy 值，然后求它们的 `mex` 值（即未出现在这些数字中的最小非负整数）。
+
+这个方案是正确可行的，但由于它的时间复杂度是平方级的 $O(N^2)$，而 $N$ 高达 $10^6$，所以直接运行会超时 (Too slow)。不过，我们可以借此代码来研究问题的规律。
+
+```cpp
+#include <iostream>
+#include <set>
+using namespace std;
+const int N = 1000000;
+int grundy[N + 1];
+
+int main() {
+    for (int i = 1; i <= N; i++) {
+        set<int> s;
+        for (int j = 1; i - j > j; j++) {
+            s.insert(grundy[j] ^ grundy[i - j]);
+        }
+        grundy[i] = 0;
+        while (s.count(grundy[i])) {
+            grundy[i]++;
+        }
+    }
+
+    int t;
+    cin >> t;
+    for (int ti = 1; ti <= t; ti++) {
+        int n;
+        cin >> n;
+        cout << (grundy[n] ? "first" : "second") << "\n";
+    }
+}
+```
+
+#### Solution 2: 利用数学悬案性质的 O(C) 优化
+通过研究 Solution 1，我们可以发现 $1222$ 是最后一个 Grundy 值为 $0$ 的状态（即后手必胜态 losing position）。因此，只需要计算状态 $0 \dots 1222$ 的 Grundy 值，因为只要硬币数大于 $1222$，我们就总是能赢。
+
+需要注意的是，我们的搜索仅仅证明了在 $0 \dots 10^6$ 范围内 $1222$ 是最后一个必败态。不过目前已知在 $0 \dots 2^{35}$ 的巨大范围内这也成立。至于在这之后是否还有必败态，依然无人知晓。
+
+```cpp
+#include <iostream>
+#include <set>
+using namespace std;
+const int N = 1222;
+int grundy[N + 1];
+
+int main() {
+    for (int i = 1; i <= N; i++) {
+        set<int> s;
+        for (int j = 1; i - j > j; j++) {
+            s.insert(grundy[j] ^ grundy[i - j]);
+        }
+        grundy[i] = 0;
+        while (s.count(grundy[i])) {
+            grundy[i]++;
+        }
+    }
+
+    int t;
+    cin >> t;
+    for (int ti = 1; ti <= t; ti++) {
+        int n;
+        cin >> n;
+        bool win = n > N || grundy[n];
+        cout << (win ? "first" : "second") << "\n";
+    }
+}
+```
+
+#### References
+* Grundy's game (Wikipedia)
+* A. Flammenkamp: Sprague-Grundy values of Grundy's game
