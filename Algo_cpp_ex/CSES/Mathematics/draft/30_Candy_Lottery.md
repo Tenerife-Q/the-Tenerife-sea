@@ -1,14 +1,14 @@
 # Candy Lottery
 
 ## Problem Description
-There are n children, and each of them independently gets a random integer number of candies between 1 and k.
+There are $n$ children, and each of them independently gets a random integer number of candies between 1 and $k$.
 What is the expected maximum number of candies a child gets?
 
 有 $n$ 个孩子，每个孩子都会独立地随机获得一个 1 到 $k$ 范围内的整数个糖果。
 求所有孩子中获得的最多糖果数的期望值是多少？
 
 ## Input
-The only input line contains two integers n and k.
+The only input line contains two integers $n$ and $k$.
 
 唯一的一行输入包含两个整数 $n$ 和 $k$。
 
