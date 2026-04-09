@@ -1,23 +1,23 @@
 # Moving Robots
 
 ## Problem Description
-Each square of an 8 \times 8 chessboard has a robot. Each robot independently moves k steps, and there can be many robots on the same square.
+Each square of an 8 \times 8 chessboard has a robot. Each robot independently moves $k$ steps, and there can be many robots on the same square.
 On each turn, a robot moves one step left, right, up or down, but not outside the board. It randomly chooses a direction among those where it can move.
-Your task is to calculate the expected number of empty squares after k turns.
+Your task is to calculate the expected number of empty squares after $k$ turns.
 
-在一个 8 \times 8 的棋盘上，每个方格中都有一个机器人。每个机器人独立移动 k 步，并且同一个方格上可以有多个机器人。
+在一个 8 \times 8 的棋盘上，每个方格中都有一个机器人。每个机器人独立移动 $k$ 步，并且同一个方格上可以有多个机器人。
 在每一回合中，一个机器人可以向左、向右、向上或向下移动一步，但不能移出棋盘。它会在它可以移动的方向中随机选择一个方向。
-你的任务是计算 k 回合后空方格的期望数量。
+你的任务是计算 $k$ 回合后空方格的期望数量。
 
 ## Input
-The only input line has an integer k.
+The only input line has an integer $k$.
 
-包含一个整数 k。
+包含一个整数 $k$。
 
 ## Output
 Print the expected number of empty squares rounded to six decimal places (rounding half to even).
 
-输出 k 回合后空方格的期望数量，保留六位小数（四舍六入五成双）。
+输出 $k$ 回合后空方格的期望数量，保留六位小数（四舍六入五成双）。
 
 ## Constraints
 $1 \le k \le 100$
@@ -145,7 +145,7 @@ int main() {
             vector<vector<double>> dp(8, vector<double>(8, 0.0));
             dp[sx][sy] = 1.0; // 第0步在起点的概率为1
 
-            // 模拟移动 k 步
+            // 模拟移动 $k$ 步
             for (int step = 0; step < k; step++) {
                 // next_dp 存储走下一步后在各个格子的概率
                 vector<vector<double>> next_dp(8, vector<double>(8, 0.0));
