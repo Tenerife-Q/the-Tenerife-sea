@@ -139,81 +139,123 @@ $$SG(n) = mex \Big( \{ SG(k) \oplus SG(n-k) \mid 1 \le k < \frac{n}{2} \} \Big)$
 
 ### 五、 参考题解与代码实现 (Solutions)
 
-#### Solution 1: 暴力计算 SG 值 (O(N^2))
-令 $\text{grundy}[x]$ 表示包含 $x$ 枚硬币的堆的 SG 也就是 Grundy 值，并令 $\oplus$ 表示异或（XOR）运算符。
-当我们把一堆 $x$ 枚硬币分成 $a$ 和 $b$ 两堆时，会产生两个子游戏，它们的 Grundy 值分别是 $\text{grundy}[a]$ 和 $\text{grundy}[b]$。因此，移动后的整体 Grundy 值为 $\text{grundy}[a] \oplus \text{grundy}[b]$。
+好的，我们这次**完全聚焦在这两份官方代码上**。
 
-为了计算 $\text{grundy}[x]$，我们遍历将 $x$ 枚硬币分成两堆的所有可能方式，计算每种移动后的 Grundy 值，然后求它们的 `mex` 值（即未出现在这些数字中的最小非负整数）。
+这两份代码其实是一个极其经典的**“发现问题 $\to$ 寻找规律 $\to$ 优化解决”**的过程。
+Solution 1 是“数学原型的直译”（虽然会超时，但逻辑完美），Solution 2 则是基于 Solution 1 的结论做出的“神级优化”。
 
-这个方案是正确可行的，但由于它的时间复杂度是平方级的 $O(N^2)$，而 $N$ 高达 $10^6$，所以直接运行会超时 (Too slow)。不过，我们可以借此代码来研究问题的规律。
+我们一句句拆解，看看这两份代码到底是怎么进化的。
+
+---
+
+### 第一步：拆解 Solution 1 (老老实实的数学直译)
+
+Solution 1 的核心目的是：**把 $N=1$ 到 $N=10^6$ 的所有 SG 值全部算出来**。
+
+我们看最核心的预处理循环（这段代码完美对应了我们前面讲的所有底层逻辑）：
 
 ```cpp
-#include <iostream>
-#include <set>
-using namespace std;
-const int N = 1000000;
-int grundy[N + 1];
-
-int main() {
-    for (int i = 1; i <= N; i++) {
-        set<int> s;
-        for (int j = 1; i - j > j; j++) {
-            s.insert(grundy[j] ^ grundy[i - j]);
-        }
-        grundy[i] = 0;
-        while (s.count(grundy[i])) {
-            grundy[i]++;
-        }
+for (int i = 1; i <= N; i++) { // i 代表当前有几枚硬币，从小到大推导
+    
+    set<int> s; // 【建集合】准备一个篮子，装下一步的所有可能性
+    
+    // 【状态分裂】：尝试把 i 枚硬币切成 j 和 i-j 两堆。
+    // 为什么条件是 i - j > j ？
+    // 1. 保证不一样多（比如 8 不能分成 4+4，因为 4>4 不成立）。
+    // 2. 避免重复计算（比如 8 分成了 3+5，就不需要再算 5+3，保证第一堆永远小于第二堆）。
+    for (int j = 1; i - j > j; j++) {
+        
+        // 【异或合并】：把切开的 j 和 i-j 这两堆的 SG 值，用 ^ 异或起来！
+        // 算出来的结果，就是“这种切法留给对手的整体战斗力”。
+        // s.insert() 把算出的结果扔进篮子里。
+        s.insert(grundy[j] ^ grundy[i - j]);
     }
+    
+    // 【求 mex 定级】：在篮子 s 里找缺失的最小非负整数。
+    grundy[i] = 0; // 从 0 开始找
+    while (s.count(grundy[i])) { // 如果篮子里有这个数
+        grundy[i]++; // 就 +1 接着往后找
+    }
+    // 循环结束时，grundy[i] 就是真正的 SG 值！
+}
+```
 
-    int t;
-    cin >> t;
+**实战答题部分：**
+```cpp
+    int t; cin >> t;
     for (int ti = 1; ti <= t; ti++) {
-        int n;
-        cin >> n;
+        int n; cin >> n;
+        // 三元运算符：grundy[n] 如果不是 0 (先手胜 first)，如果是 0 (后手胜 second)
         cout << (grundy[n] ? "first" : "second") << "\n";
     }
-}
 ```
 
-#### Solution 2: 利用数学悬案性质的 O(C) 优化
-通过研究 Solution 1，我们可以发现 $1222$ 是最后一个 Grundy 值为 $0$ 的状态（即后手必胜态 losing position）。因此，只需要计算状态 $0 \dots 1222$ 的 Grundy 值，因为只要硬币数大于 $1222$，我们就总是能赢。
+**Solution 1 的致命死穴：太慢了 (Too slow)**
+注意看 `const int N = 1000000;`。
+外层循环跑 100万次，内层循环跑 50万次，时间复杂度是 $O(N^2)$。嵌套起来总共要算几千亿次！在 1 秒的限制内绝对会 **超时 (Time Limit Exceeded)**。
 
-需要注意的是，我们的搜索仅仅证明了在 $0 \dots 10^6$ 范围内 $1222$ 是最后一个必败态。不过目前已知在 $0 \dots 2^{35}$ 的巨大范围内这也成立。至于在这之后是否还有必败态，依然无人知晓。
+---
+
+### 第二步：从 Solution 1 到 Solution 2 的“顿悟”
+
+既然 Solution 1 肯定超时，官方为什么还要贴出来？
+**因为 Solution 1 是一个“规律探测器”。**
+
+如果你把 Solution 1 在自己电脑上运行，并且加一句代码，把所有算出来等于 0 的硬币数打印出来：
+你会发现，屏幕上打印出了：`1, 2, 4, 7, 10 ... 1222`。
+**但是，过了 1222 之后，你的电脑风扇狂转，算到了 100万，屏幕上却再也没有出现过任何一个 `0`！**
+
+这说明了什么？
+说明只要硬币的数量大于 1222，算出来的 SG 值**全都是大于 0 的（全都是先手必胜）**！
+既然 1222 以后全是必胜，我们何必还要傻傻地去算 1223 到 100万 的具体 SG 值呢？！
+
+---
+
+### 第三步：拆解 Solution 2 (利用规律的降维绝杀)
+
+带着刚才发现的“惊天秘密”，我们来看 Solution 2 是怎么改写代码的。
+
+**改动 1：极其暴力的缩减计算量**
+```cpp
+const int N = 1222; // 关键改动在这里！！！
+int grundy[N + 1];
+```
+Solution 2 直接把预处理的上限从 $1000000$ 砍到了 $1222$！
+原本要算几千亿次，现在 $1222 \times 611$，只要算 70多万次，**0.01 秒**就能瞬间算完！
+*(而中间那段算 `set`、异或和 `mex` 的核心循环代码，一字未改，只是循环次数大幅减少了)*。
+
+**改动 2：实战答题部分的逻辑升级**
+既然数组只存到了 1222，那遇到题目问 $N = 50000$ 的时候怎么办？看代码：
 
 ```cpp
-#include <iostream>
-#include <set>
-using namespace std;
-const int N = 1222;
-int grundy[N + 1];
-
-int main() {
-    for (int i = 1; i <= N; i++) {
-        set<int> s;
-        for (int j = 1; i - j > j; j++) {
-            s.insert(grundy[j] ^ grundy[i - j]);
-        }
-        grundy[i] = 0;
-        while (s.count(grundy[i])) {
-            grundy[i]++;
-        }
-    }
-
-    int t;
-    cin >> t;
+    int t; cin >> t;
     for (int ti = 1; ti <= t; ti++) {
-        int n;
-        cin >> n;
-        bool win = n > N || grundy[n];
+        int n; cin >> n;
+        
+        // 终极捷径判定：
+        // win 是一个布尔值 (true/false)
+        // 条件 1: n > N (即 n > 1222)。只要大于 1222，直接认定为 true (赢)。
+        // 条件 2: grundy[n]。如果不大于 1222，就去查数组。只要数组里的值不为 0，也是 true (赢)。
+        bool win = n > N || grundy[n]; 
+        
+        // 根据 win 的结果输出
         cout << (win ? "first" : "second") << "\n";
     }
-}
 ```
+
+### 结合两份代码的最终总结
+
+1.  **Solution 1 是“道”（理论依据）**：它用双层 `for` 循环、异或 `^` 和 `while` 循环，严丝合缝地把“状态分裂 $\to$ 独立合并 $\to$ mex 定级”这套数学定理变成了 C++ 代码。它是为了证明理论的正确性而存在的。
+2.  **Solution 2 是“术”（工程解法）**：在竞赛中，时间就是生命。Solution 2 发现了 Solution 1 计算结果中的**天然边界（1222）**，通过加一个简单的 `n > N` 判定，成功把一个 $O(N^2)$ 的超时算法，变成了 $O(1)$ 的秒杀算法。
+
+官方把两份代码放在一起，想告诉你的核心思想是：**当你能写出严谨但超时的状态转移代码（Sol 1）时，不要死磕算法本身的优化，去打印一下数据，博弈论的题目往往隐藏着打破常规的常数规律（Sol 2）。**
 
 #### References
 * Grundy's game (Wikipedia)
 * A. Flammenkamp: Sprague-Grundy values of Grundy's game
+
+
+
 
 
 深呼吸，忘记前面所有的公式和代码。既然你被数学绕晕了，那说明你的大脑更喜欢**具体的场景和画面**。
