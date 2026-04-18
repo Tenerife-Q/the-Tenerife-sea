@@ -1,16 +1,45 @@
 /*
-题目：Exponentiation II
-
-描述（中）：给定 n 次查询，每次给出三个整数 a, b, c，计算 a^{b^c} mod 10^9+7。
-数据范围：0 ≤ a,b,c ≤ 10^9，1 ≤ n ≤ 10^5。注意题目中的边界约定（如 0^0 的处理）。
-
-Description (EN): Given n queries, each with integers a, b, c, compute a^{b^c} modulo 10^9+7.
-Constraints: 0 ≤ a,b,c ≤ 10^9, 1 ≤ n ≤ 10^5. Pay attention to corner cases such as 0^0.
-
-来源：CSES — Exponentiation II (Mathematics)
-
-下面给出精炼的模板代码与核心注释（ICPC/竞赛友好，便于盲打）
-*/
+ * @Problem: Exponentiation II
+ * @Source: CSES - Mathematics
+ * 
+ * @Description (English):
+ * Your task is to efficiently calculate the value a^{b^c} modulo 10^9+7.
+ * Note that in this task we assume that 0^0 = 1.
+ * 
+ * @Description (Chinese):
+ * 给定 n 次查询，每次给出三个整数 a, b, c，高效计算 a^{b^c} 对 10^9+7 取模的值。
+ * 注意在本题中我们假定 0^0 = 1。
+ * 
+ * @Input:
+ * The first input line has an integer n: the number of calculations.
+ * After this, there are n lines, each containing three integers a, b, and c.
+ * 第一行输入包含一个整数 n：计算次数。
+ * 接下来 n 行，每行包含三个整数 a, b, 和 c。
+ * 
+ * @Output:
+ * Print each value a^{b^c} modulo 10^9+7.
+ * 输出每个 a^{b^c} 对 10^9+7 取模的值。
+ * 
+ * @Constraints:
+ * 1 <= n <= 10^5
+ * 0 <= a, b, c <= 10^9
+ * 
+ * @Example:
+ * Input:
+ * 3
+ * 3 7 1
+ * 15 2 2
+ * 3 4 5
+ * 
+ * Output:
+ * 2187
+ * 50625
+ * 763327764
+ * 
+ * @Algorithm:
+ * Fermat's Little Theorem / Fast Power (费马小定理 / 降幂 / 快速幂)
+ * 下面给出精炼的模板代码与核心注释（ICPC/竞赛友好，便于盲打）
+ */
 
 
 /*
