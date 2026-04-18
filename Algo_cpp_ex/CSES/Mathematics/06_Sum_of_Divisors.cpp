@@ -1,32 +1,39 @@
 /*
-题目：Sum of Divisors
-
-描述（中）：令 σ(i) 表示整数 i 的所有正约数之和。例如 σ(12)=1+2+3+4+6+12=28。
-给定 n，计算 S = sum_{i=1..n} σ(i) 和之前求一个数的所有约数之和的题目不同，这里是求 1 到 n 中每个数的约数之和的总和。
-S = ∑_{i=1}^n σ(i) 
-并输出 S mod 1e9+7。
-
-Description (EN): Let σ(n) denote the sum of divisors of n. Given n, compute
-S = \sum_{i=1}^n σ(i) modulo 10^9+7.
-
-输入 (Input):
- - 单行一个整数 n。
-
-输出 (Output):
- - 输出 \sum_{i=1}^n σ(i) modulo 10^9+7。
-
-约束 (Constraints):
- - 1 ≤ n ≤ 10^12
-
-示例 (Example):
-输入:
-5
-
-输出:
-21
-
-提示：本题的关键是整除分块（quotient block / number theoretic block），能将复杂度降到 O(√n)。参见文件下方实现与注释。
-*/
+ * @Problem: Sum of Divisors
+ * @Source: CSES - Mathematics
+ * 
+ * @Description (English):
+ * Let σ(n) denote the sum of divisors of an integer n. 
+ * For example, σ(12) = 1 + 2 + 3 + 4 + 6 + 12 = 28.
+ * Your task is to calculate the sum \sum_{i=1}^{n} σ(i) modulo 10^9+7.
+ * 
+ * @Description (Chinese):
+ * 令 σ(n) 表示整数 n 的所有正约数之和。
+ * 例如：σ(12) = 1 + 2 + 3 + 4 + 6 + 12 = 28。
+ * 你的任务是计算总和 \sum_{i=1}^{n} σ(i) 对 10^9+7 取模后的结果。
+ * 
+ * @Input:
+ * The only input line has an integer n.
+ * 单行包含一个整数 n。
+ * 
+ * @Output:
+ * Print \sum_{i=1}^{n} σ(i) modulo 10^9+7.
+ * 输出 \sum_{i=1}^{n} σ(i) 对 10^9+7 取模后的结果。
+ * 
+ * @Constraints:
+ * 1 <= n <= 10^12
+ * 
+ * @Example:
+ * Input:
+ * 5
+ * 
+ * Output:
+ * 21
+ * 
+ * @Algorithm:
+ * Number Theoretic Block / Quotient Block (数论分块 / 整除分块)
+ * 提示：本题的关键是利用数论奇偶对称性以及等差数列求和进行分块，能将复杂度降到 O(√n)。参见下方实现与核心注释。
+ */
 
 /*
 这是一个非常深刻且直击算法灵魂的问题！把这四个问题搞懂，你就彻底掌握了“整除分块”和“数论基础”的精髓。
