@@ -2,22 +2,46 @@
 using namespace std;
 
 /*
-题目：Exponentiation
-
-描述（中）：高效计算 a^b mod (1e9+7)。
-输入第一行给出 n 表示计算次数，接下来 n 行每行给出两个整数 a 和 b，输出每个 a^b (模 1e9+7) 的值。假定 0^0 = 1。
-
-Description (EN): Efficiently calculate a^b modulo 10^9+7. 
-The first line contains integer n, the number of calculations. 
-Then follow n lines each with integers a and b. Print each a^b modulo 10^9+7. Note that 0^0 = 1.
-
-Input:
- - First line: integer n (1 ≤ n ≤ 2·10^5)
- - Next n lines: integers a, b (0 ≤ a, b ≤ 10^9)
-
-Output:
- - For each pair, print a^b mod 1e9+7 on its own line.
-*/
+ * @Problem: Exponentiation
+ * @Source: CSES - Mathematics
+ * 
+ * @Description (English):
+ * Your task is to efficiently calculate the value a^b modulo 10^9+7.
+ * Note that in this task we assume that 0^0 = 1.
+ * 
+ * @Description (Chinese):
+ * 你的任务是高效计算 a^b 对 10^9+7 取模的值。
+ * 注意在本题中我们假定 0^0 = 1。
+ * 
+ * @Input:
+ * The first input line contains an integer n: the number of calculations.
+ * After this, there are n lines, each containing two integers a and b.
+ * 第一行输入包含一个整数 n：计算次数。
+ * 接下来 n 行，每行包含两个整数 a 和 b。
+ * 
+ * @Output:
+ * Print each value a^b modulo 10^9+7.
+ * 输出每个 a^b 对 10^9+7 取模的值。
+ * 
+ * @Constraints:
+ * 1 <= n <= 2 * 10^5
+ * 0 <= a, b <= 10^9
+ * 
+ * @Example:
+ * Input:
+ * 3
+ * 3 4
+ * 2 8
+ * 123 123
+ * 
+ * Output:
+ * 81
+ * 256
+ * 921450052
+ * 
+ * @Algorithm:
+ * Modular Exponentiation / Fast Power (快速幂)
+ */
 
 
 
