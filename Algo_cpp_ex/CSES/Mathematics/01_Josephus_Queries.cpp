@@ -1,12 +1,47 @@
 /*
-题目：Josephus Queries (约瑟夫问题查询)
-
-描述（中）：给定 n 个人围成一圈，从某个方向开始按固定规则每轮删除若干人。对于给定的 k，求第 k 个被删除的人在原始编号中的序号。
-
-Description (EN): Given n people in a circle, repeatedly remove people according to a fixed pattern. For a query k, find the label of the k-th removed person in the original numbering (CSES — Josephus Queries).
-
-说明：本文件包含若干实现，末尾附有“神级解法”及其逐行讲解（注释）。
-*/
+ * @Problem: Josephus Queries
+ * @Source: CSES - Mathematics
+ * 
+ * @Description (English):
+ * Given n people in a circle, repeatedly remove people according to a fixed pattern. 
+ * For a query k, find the label of the k-th removed person in the original numbering.
+ * 
+ * @Description (Chinese):
+ * 给定 n 个人围成一圈，从某个方向开始按固定规则每轮删除若干人。
+ * 对于给定的 k，求第 k 个被删除的人在原始编号中的序号。
+ * 
+ * @Input:
+ * The first line contains an integer q: the number of queries.
+ * After this, there are q lines that describe the queries. Each line has two integers n and k.
+ * 第一行包含一个整数 q：查询次数。
+ * 接下来 q 行，每行描述一次查询，包含两个整数 n 和 k。
+ * 
+ * @Output:
+ * Print the answer for each query.
+ * 打印每个查询的答案。
+ * 
+ * @Constraints:
+ * 1 <= q <= 10^5
+ * 1 <= k <= n <= 10^9
+ * 
+ * @Example:
+ * Input:
+ * 4
+ * 7 1
+ * 7 2
+ * 7 3
+ * 7 4
+ * 
+ * Output:
+ * 2
+ * 4
+ * 6
+ * 1
+ * 
+ * @Algorithm:
+ * Recursion / Josephus Problem (递归 / 约瑟夫环)
+ * 说明：本文件包含若干实现，末尾附有“神级解法”及其逐行讲解（注释）。
+ */
 // #include <iostream>
 
 // using namespace std;
