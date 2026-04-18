@@ -1,0 +1,191 @@
+# Sum of Divisors
+
+## Problem Description
+Let $\sigma(n)$ denote the sum of divisors of an integer $n$. For example, $\sigma(12) = 1+2+3+4+6+12 = 28$.
+Given $n$, calculate the sum:
+$$S = \sum_{i=1}^n \sigma(i)$$
+Your task is to compute $S \pmod{10^9+7}$.
+
+令 $\sigma(n)$ 表示整数 $n$ 的所有正约数之和。例如 $\sigma(12) = 1+2+3+4+6+12=28$。
+给定 $n$，计算 $1$ 到 $n$ 中每个数的约数之和的总和：
+$$S = \sum_{i=1}^n \sigma(i)$$
+并输出 $S \pmod{10^9+7}$。
+
+## Input
+The only input line has an integer $n$.
+
+单行包含一个整数 $n$。
+
+## Output
+Print $\sum_{i=1}^n \sigma(i) \pmod{10^9+7}$.
+
+输出 $\sum_{i=1}^n \sigma(i) \pmod{10^9+7}$。
+
+## Constraints
+* $1 \le n \le 10^{12}$
+
+## Example
+**Input:**
+```text
+5
+```
+
+**Output:**
+```text
+21
+```
+*(Explanation: $\sigma(1)=1, \sigma(2)=3, \sigma(3)=4, \sigma(4)=7, \sigma(5)=6$. The sum is $1+3+4+7+6=21$.)*
+
+---
+
+## 核心考点与算法剖析
+
+这道题虽然披着“素数/因子”的外衣，实际上是极为经典的**数论分块（Number Theoretic Block / Integer Division Chunking）**算法模板题。如果不采用分块思维，在 $n = 10^{12}$ 的压迫下，任何 $O(n)$ 或者 $O(n \log n)$ 的解法都会遭受降维打击般的超时 (TLE)。
+
+### 算法一：正向暴力思维 (Brute Force) - 为什么不可行？
+最直接的做法是：枚举 $i$ 从 $1$ 到 $n$，对每个 $i$ 用 $O(\sqrt{i})$ 的时间求出它的约数和，然后全部加起来。
+- **时间复杂度**：$O(n \sqrt{n})$。当 $n = 10^{12}$ 时，运算量高达 $10^{18}$，宇宙尽头都算不完。
+
+更聪明一点的暴力法：转换视角，不去问“每个数被哪些数整除”，而是去问**“数字 $x$ 作为约数，在 $1 \dots n$ 的区间里出现了多少次？”**
+数字 $x$ 出现在 $x, 2x, 3x \dots$ 等它的倍数中。所以在 $1 \dots n$ 这个范围内，$x$ 总共作为约数出现了 $\lfloor \frac{n}{x} \rfloor$ 次！
+因此，原公式可以极度优雅地转变为：
+$$S = \sum_{x=1}^n \left( x \times \left\lfloor \frac{n}{x} \right\rfloor \right)$$
+- **时间复杂度**：只要一层 $O(n)$ 的循环。
+- **结论**：然而 $n = 10^{12}$，由于 CPU 每秒运算大约 $10^8$ 次，跑完 $O(n)$ 需要数小时，依然 **TLE**。只能逼迫我们寻找 $O(\sqrt{n})$ 的出路。
+
+---
+
+### 算法二：数论分块结合对称性 - $O(\sqrt{n})$ 本题最优解
+
+我们要计算的是 $\sum_{x=1}^n x \cdot \lfloor n/x \rfloor$。
+在 $x > \sqrt{n}$ 之后，$\lfloor n/x \rfloor$ 这个商的值会变得非常小，而且**大段大段的 $x$ 对应的 $\lfloor n/x \rfloor$ 都会是同一个值**！
+
+举个例子：$n = 100$
+- $x = 51 \sim 100$ 时，$\lfloor 100/x \rfloor$ 恒等于 $1$。
+- $x = 34 \sim 50$ 时，$\lfloor 100/x \rfloor$ 恒等于 $2$。
+
+**数论分块的核心法则**：
+既然有一大片连续的 $x$ 区间（设左右端点为 $L$ 和 $R$），它们的“出现次数” $q = \lfloor n/x \rfloor$ 全是一模一样的，我们干嘛还要一个一个去算乘法呢？
+对于这个区间，它的贡献和可以直接拉出来：
+$$q \times \left( L + (L+1) + \dots + R \right)$$
+后面这是一个标准的**等差数列求和**：$\frac{(L + R) \times \text{项数}}{2}$。
+
+#### 跷跷板分界点：$\sqrt{n}$
+由于 $x \times \lfloor n/x \rfloor \le n$ 是一对乘积因子关系，故这两个角色中必定至少有一个 $\le \sqrt{n}$！
+因此我们将计算彻底劈成两半：
+**第一部分（小约数）：** 当约数 $k \le \sqrt{n}$，我们直接用 $O(\sqrt{n})$ 遍历这些约数，每次加上 $k \times \lfloor n/k \rfloor$。
+**第二部分（大约数）：** 大约数不好直接遍历，转而**遍历它们出现的次数 $k$**（显然此时次数 $k \le \sqrt{n}$ ）！并且当次数为 $k$ 时，必定对应一段连续的大约数区间，我们利用等差数列一把算完。
+
+---
+
+## 核心代码变量与数学细节讲解
+
+这里有四个深刻的数学细节：
+
+### 1. `n/k` 的角色互换
+- 在**第一部分 (小约数遍历)** 中，`k` 是**约数本身**。此时 `n/k` 表示这个约数在 $1\dots n$ 中出现的**次数**。
+- 在**第二部分 (大约数块的次数遍历)** 中，`k` 变成了**出现的次数**。此时 `n/k` 反过来表示“刚好出现这么多次的**最大约数边界**”。
+
+### 2. 区间边界划分与防止重叠计算
+第一部分的条件是 $k^2 \le n$（即小约数 $\le \sqrt{n}$）。
+第二部分虽然次数也是 $\le \sqrt{n}$，但条件必须写成 `n/k > k`！这意为：“我要找的最大约数上界，必须超过我在第一部分已经亲手算过的那个 $\sqrt{n}$”。
+这块“防火墙”绝对杜绝了同一数字被第一部分和第二部分重复计算两次的悲剧。
+
+### 3. 取模意义下的除法 (计算乘法逆元)
+等差数列中有除以 $2$ 的操作：$\frac{(L+R) \times (R - L + 1)}{2}$。
+在模运算中，**不能直接执行除法**！要把除以 $2$ 改成乘以 **2 对于模数 $10^9+7$ 的乘法逆元**。
+设逆元为 $x$，定义式：$2 \times x \equiv 1 \pmod{10^9+7}$
+显然 $2 \times 500000004 = 1000000008 \equiv 1 \pmod{10^9+7}$。
+因此在代码里，原本的 `/ 2` 将替换为 `* 500000004 % MOD`。
+
+---
+
+## 究极压行与防溢出代码实现
+
+```cpp
+#include <iostream>
+
+using namespace std;
+
+// 1e9 + 7
+long long MOD = 1000000007;
+
+// 2 在模 10^9+7 下的乘法逆元
+long long INV2 = 500000004;
+
+// 给定连续数列左右端点，计算等差数列和：(L + R) * 项数 / 2
+// 注意：每次乘法后都必须进行 % MOD，防止爆 long long 溢出！
+long long sum_sequence(long long l, long long r) {
+    long long cnt = (r - l + 1) % MOD;        // 项数
+    long long sum_LR = (l + r) % MOD;         // 首项 + 末项
+    long long res = (cnt * sum_LR) % MOD;     // (联乘)
+    return (res * INV2) % MOD;                // 乘以逆元等效于除以 2
+}
+
+int main() {
+    // Fast I/O
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    long long n;
+    if (!(cin >> n)) return 0;
+
+    long long total_sum = 0;
+
+    // 第一部分：处理 <= √n 的“小约数”
+    // 此时 k 本身代表约数的大小。
+    long long k;
+    for (k = 1; k * k <= n; ++k) {
+        long long occur_times = n / k;
+        // 把这个数产生的和加入结果
+        // 因为可能有多次相加操作，内部也要取模
+        long long current_val = (k % MOD) * (occur_times % MOD) % MOD;
+        total_sum = (total_sum + current_val) % MOD;
+    }
+
+    // 第二部分：处理 > √n 的“大约数”
+    // 这些大约数拥有一个共同特征：它们在 1~n 范围内的出现次数很少。
+    // 所以，我们转而遍历它们出现的“次数”！此时 k 代表出现的次数。
+    for (k = 1; n / k > k; ++k) {
+        // 次数为 k 的这些大约数，有一个连续的右边界 R
+        long long R = n / k;
+        
+        // 它们必然也要有一个左边界 L
+        // 因为次数比 k 大1 的右边界是 n / (k + 1)
+        // 所以当前这一批次的左边界就是 (n / (k + 1)) + 1
+        long long L = n / (k + 1) + 1;
+        
+        // 我们在第一部分已经处理完所有的 “<= 小部分约数边界” 
+        // 为了防止重复计算，我们要确保算的大约数 L 必须严于第一阶段的边界
+        long long max_small_divisor = -1;
+        // 退回第一阶段计算后的 k 位置，找到第一阶段算到的真正最后的小约数
+        long long small_d = 1;
+        while (small_d * small_d <= n) {
+            small_d++;
+        }
+        small_d--; // 找到最大的 <= √n 的数字
+        
+        // 事实上，上面 L 已经能天然隔离，只要和第一阶段对接
+        // 我们取 max 确保不要把第一部分算过的重新算进去
+        if (L <= small_d) {
+            L = small_d + 1;
+        }
+
+        // 如果左边界被挤压导致比右边界还大，那就证明这段不合法，直接不计算即可
+        if (L <= R) {
+            // (L...R) 这段里面所有数字作为约数，统统在 1~n 里出现了 k 次！
+            // 所以我们求这批数字的等差数列和，然后统一乘以批次 k
+            long long seq_sum = sum_sequence(L, R);
+            long long block_val = (seq_sum * (k % MOD)) % MOD;
+            total_sum = (total_sum + block_val) % MOD;
+        }
+    }
+
+    cout << total_sum << "\n";
+
+    return 0;
+}
+```
+
+### 教练话语总结
+整除分块在 $10^{12}$ 的数论题目中是神一般的存在。将原本不可逾越的 $O(n)$ 拉回了极为快速的 $O(\sqrt{n})$。彻底领悟“小数字以元素枚举，大数字以块组枚举（反转出现次数）”以及逆元除法的使用，是这道题留给算法竞赛生最纯粹的设计美学体现！
