@@ -1,34 +1,46 @@
 /*
-题目：Counting Divisors
-
-描述（中）：给定 Q 个查询，每个查询给出一个整数 X（1 ≤ X ≤ 10^6），输出 X 的约数个数。
-
-Description (EN): Given Q queries, each provides an integer X (1 ≤ X ≤ 10^6). For each X, output the number of divisors of X.
-
-输入 (Input):
- - 第一行：整数 Q，表示查询次数（1 ≤ Q ≤ 1e5）。
- - 接下来 Q 行：每行一个整数 X（1 ≤ X ≤ 1e6）。
-
-输出 (Output):
- - 对每个查询输出一行，表示 X 的约数个数。
-
-示例 (Example):
-输入:
-3
-16
-17
-18
-
-输出:
-5
-2
-6
-
-关于 Q 与 X 的关系与复杂度：
- - 设 MAX_X 为 X 的上界（本题 MAX_X = 1e6）。使用“调和级数筛法”预处理需 O(MAX_X log MAX_X) 时间和 O(MAX_X) 内存，随后每次查询 O(1)。
- - 总时间：O(MAX_X log MAX_X + Q)。因此当 Q 很大且 MAX_X 不大时（例如本题），预处理法最优。
- - 若 X 很大（例如 1e12）且 Q 很小，使用每次 O(sqrt(X)) 的试除/质因数分解法更合适，总时间约 O(Q * sqrt(X))。
-*/
+ * @Problem: Counting Divisors
+ * @Source: CSES - Mathematics
+ * 
+ * @Description (English):
+ * Given n integers, your task is to report for each integer the number of its divisors.
+ * For example, if x=18, the correct answer is 6 because its divisors are 1,2,3,6,9,18.
+ * 
+ * @Description (Chinese):
+ * 给定 n 个整数，你的任务是报告每个整数的约数个数。
+ * 例如如果 x=18，约数有 1,2,3,6,9,18，正确答案是 6。
+ * 
+ * @Input:
+ * The first input line has an integer n: the number of integers.
+ * After this, there are n lines, each containing an integer x.
+ * 第一行包含一个整数 n：查询次数。
+ * 接下来 n 行，每行包含一个整数 x。
+ * 
+ * @Output:
+ * For each integer, print the number of its divisors.
+ * 对于每个整数，输出它的约数个数。
+ * 
+ * @Constraints:
+ * 1 <= n <= 10^5
+ * 1 <= x <= 10^6
+ * 
+ * @Example:
+ * Input:
+ * 3
+ * 16
+ * 17
+ * 18
+ * 
+ * Output:
+ * 5
+ * 2
+ * 6
+ * 
+ * @Algorithm:
+ * Harmonic Sieve / Prime Factorization (调和级数筛法 / 质因数分解)
+ * 设 MAX_X 为 1e6。预处理 O(MAX_X log MAX_X) 时间和 O(MAX_X) 内存，随后每次查询 O(1)。
+ * 核心考点：数据范围博弈、唯一分解定理、配对试除法。本题选择调和级数筛法最优。
+ */
 
 /*
 #include <iostream>
