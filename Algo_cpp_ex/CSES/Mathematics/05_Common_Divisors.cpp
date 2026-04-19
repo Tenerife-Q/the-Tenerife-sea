@@ -1,25 +1,40 @@
 /*
-第 5 题：Common Divisors (CSES - 1081)
-
-题目大意：
-给定 n 个正整数，你需要从这 n 个数中选出两个数，使得它们的最大公约数（GCD）最大。
-数据范围：2 ≤ n ≤ 2e5，每个整数 1 ≤ x_i ≤ 1e6。
-
-思路与详解（反向思维 + 调和级数）：
-
-1) 直观的正向穷举：枚举所有对 (i,j) 并计算 GCD，时间 O(n^2)，对于 n=2e5 必然 TLE。
-
-2) 破局之道：逆向枚举 GCD 值 g。
-   - 设 cnt[v] 为值 v 在数组中出现的次数。
-   - 如果某个 g 存在至少两个数组元素为 g 的倍数，那么 g 有资格成为候选 GCD。
-   - 只需从大到小枚举 g，统计其倍数 g,2g,3g,... 在数组中出现的总次数，若 >=2 则直接输出 g（因为倒序枚举，第一个满足的即为最大）。
-
-3) 复杂度分析：
-   - 枚举所有 g 的倍数总工作量为 X * (1 + 1/2 + 1/3 + ... + 1/X) ≈ X log X，其中 X = 1e6（题目上界）。
-   - 实际操作约 1.4e7 次，加上 I/O 优化，C++ 可瞬间完成。
-
-4) 代码（ICPC 竞赛友好、可盲打）：
-*/
+ * @Problem: Common Divisors
+ * @Source: CSES - Mathematics
+ * 
+ * @Description (English):
+ * Given an array of n positive integers, your task is to find two integers such that their greatest common divisor is as large as possible.
+ * 
+ * @Description (Chinese):
+ * 给定包含 n 个正整数的数组，你的任务是从中找出两个整数，使得它们的最大公约数（GCD）尽可能大。
+ * 
+ * @Input:
+ * The first input line has an integer n: the size of the array.
+ * The second line has n integers x_1,x_2,\ldots,x_n: the contents of the array.
+ * 第一行输入包含一个整数 n：数组的大小。
+ * 第二行包含 n 个整数 x_1,x_2,\ldots,x_n：数组的内容。
+ * 
+ * @Output:
+ * Print the maximum greatest common divisor.
+ * 输出最大的最大公约数。
+ * 
+ * @Constraints:
+ * 2 <= n <= 2 * 10^5
+ * 1 <= x_i <= 10^6
+ * 
+ * @Example:
+ * Input:
+ * 5
+ * 3 14 15 7 9
+ * 
+ * Output:
+ * 7
+ * 
+ * @Algorithm:
+ * Reverse Thinking / Harmonic Series (逆向枚举 / 调和级数筛法)
+ * 复杂度：O(X log X)，其中 X=10^6 为值域上界。
+ * 思路：破局之道在于逆向枚举 GCD 值 g。统计倍数出现次数，倒序从大到小枚举，第一个遇见的满足倍数个数 >=2 次的即为最优解。
+ */
 
 #include <iostream>
 #include <vector>
