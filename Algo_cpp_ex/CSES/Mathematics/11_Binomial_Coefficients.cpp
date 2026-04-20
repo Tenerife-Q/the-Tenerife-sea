@@ -1,27 +1,46 @@
 /*
- * ==============================================================================
- * CSES Problem Set - Binomial Coefficients
- * Category: Mathematics
+ * @Problem: Binomial Coefficients
+ * @Source: CSES - Mathematics
  * 
- * 【题目描述 / Problem Description】
- * 给定 n 次查询，每次给定整数 a 和 b，求组合数 C(a, b) 模 10^9+7 的值。
- * Given n queries, each containing two integers a and b, calculate the binomial 
- * coefficient aCb modulo 10^9+7.
+ * @Description (English):
+ * Your task is to calculate n binomial coefficients modulo 10^9+7.
+ * A binomial coefficient (a \choose b) can be calculated using the formula a! / (b!(a-b)!).
+ * We assume that a and b are integers and 0 <= b <= a.
  * 
- * 【数据范围 / Constraints】
- * 1 <= n <= 10^5 (查询次数)
- * 0 <= b <= a <= 10^6 (数值范围)
+ * @Description (Chinese):
+ * 你的任务是计算 n 个二项式系数（组合数）对 10^9+7 取模的结果。
+ * 一个二项式系数 C(a, b) 可以使用公式 a! / (b!(a-b)!) 来计算。
+ * 我们假设 a 和 b 都是整数并且 0 <= b <= a。
  * 
- * 【核心解法 / Core Algorithm】
- * 1. 组合数公式：C(a, b) = a! / (b! * (a-b)!)
- * 2. 模意义下的除法：除以 x 等价于乘以 x 的乘法逆元 (Modular Inverse)。
- * 3. 费马小定理：当模数 M 为质数时，x 的逆元为 x^(M-2) % M。
- * 4. 极致预处理优化：
- *    - 顺推预处理 1 到 10^6 的所有阶乘 (fact array)。
- *    - 用快速幂单独求出最大阶乘 10^6! 的逆元。
- *    - 利用公式 1/(i-1)! = (1/i!) * i，从后往前 O(N) 倒推出所有阶乘的逆元 (invFact)。
- *    - 最终每次查询只需 O(1) 即可完成！
- * ==============================================================================
+ * @Input:
+ * The first input line contains an integer n: the number of calculations.
+ * After this, there are n lines, each of which contains two integers a and b.
+ * 第一行包含一个整数 n：计算的次数。
+ * 接下来 n 行，每行包含两个整数 a 和 b。
+ * 
+ * @Output:
+ * Print each binomial coefficient modulo 10^9+7.
+ * 打印每个组合数对 10^9+7 取模的值。
+ * 
+ * @Constraints:
+ * 1 <= n <= 10^5
+ * 0 <= b <= a <= 10^6
+ * 
+ * @Example:
+ * Input:
+ * 3
+ * 5 3
+ * 8 1
+ * 9 5
+ * 
+ * Output:
+ * 10
+ * 8
+ * 126
+ * 
+ * @Algorithm:
+ * Modular Multiplicative Inverse / Combinatorics (模乘法逆元 / 组合数学)
+ * 极致预处理优化：顺推预处理阶乘，用费马小定理快速幂求最大阶乘逆元，倒推求所有逆元，O(1) 回答。
  */
 
 #include <iostream>
