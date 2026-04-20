@@ -1,55 +1,41 @@
 /*
-================================================================================
-Title: Permutation Order
-Time limit: 1.00 s
-Memory limit: 512 MB
-
-[English Description]
-Let p(n,k) denote the kth permutation (in lexicographical order) of 1 ... n. 
-For example, p(4,1) = [1,2,3,4] and p(4,2) = [1,2,4,3].
-
-Your task is to process two types of tests:
-1. Given n and k, find p(n,k)
-2. Given n and p(n,k), find k
-
-Input:
-The first line has an integer t: the number of tests.
-Each test is either "1 n k" or "2 n p(n,k)".
-
-Output:
-For each test, print the answer according to the example.
-
-Constraints:
-1 <= t <= 1000
-1 <= n <= 20
-1 <= k <= n!
-
---------------------------------------------------------------------------------
-
-[中文题目描述]
-标题：排列顺序 (Permutation Order)
-时间限制：1.00 秒  |  内存限制：512 MB
-
-令 p(n,k) 表示 1 到 n 按照字典序的第 k 个排列。
-例如，p(4,1) = [1,2,3,4]，p(4,2) =[1,2,4,3]。
-
-你的任务是处理以下两种类型的测试操作：
-1. 已知 n 和 k，求出排列 p(n,k)
-2. 已知 n 和排列 p(n,k)，求出其对应的序号 k
-
-输入格式：
-第一行包含一个整数 t：表示测试的数量。
-每个测试用例的格式要么是 "1 n k"，要么是 "2 n p(n,k)"。
-
-输出格式：
-对于每个测试，按照样例输出对应的答案。
-
-数据范围：
-1 <= t <= 1000
-1 <= n <= 20
-1 <= k <= n!
-================================================================================
-*/
+ * @Problem: Permutation Order
+ * @Source: CSES - Mathematics
+ * 
+ * @Description (English):
+ * Let p(n,k) denote the kth permutation (in lexicographical order) of 1 ... n. 
+ * For example, p(4,1) = [1,2,3,4] and p(4,2) = [1,2,4,3].
+ * Your task is to process two types of tests:
+ * 1. Given n and k, find p(n,k)
+ * 2. Given n and p(n,k), find k
+ * 
+ * @Description (Chinese):
+ * 令 p(n,k) 表示 1 到 n 按照字典序的第 k 个排列。
+ * 例如，p(4,1) = [1,2,3,4]，p(4,2) =[1,2,4,3]。
+ * 你的任务是处理以下两种类型的测试操作：
+ * 1. 已知 n 和 k，求出排列 p(n,k)
+ * 2. 已知 n 和排列 p(n,k)，求出其对应的序号 k
+ * 
+ * @Input:
+ * The first line has an integer t: the number of tests.
+ * Each test is either "1 n k" or "2 n p(n,k)".
+ * 第一行包含一个整数 t：表示测试的数量。
+ * 每个测试用例的格式要么是 "1 n k"，要么是 "2 n p(n,k)"。
+ * 
+ * @Output:
+ * For each test, print the answer according to the example.
+ * 对于每个测试，按照样例输出对应的答案。
+ * 
+ * @Constraints:
+ * 1 <= t <= 1000
+ * 1 <= n <= 20
+ * 1 <= k <= n!
+ * 
+ * @Algorithm:
+ * Combinatorics / Permutation Order (组合数学 / 康托展开)
+ * 
+ * 利用阶乘系统，通过除法与取余得到每一位的“相对名次”，从而计算出完整的排列或其字典序编号。
+ */
 
 #include <iostream>
 #include <vector>
