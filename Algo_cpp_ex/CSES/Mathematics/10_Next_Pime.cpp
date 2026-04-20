@@ -1,36 +1,43 @@
 /*
- * ==============================================================================
- * CSES Problem Set - Next Prime
- * Category: Mathematics
+ * @Problem: Next Prime
+ * @Source: CSES - Mathematics
  * 
- * 【题目描述 / Problem Description】
- * 给定一个正整数 n，找到严格大于 n 的最小素数。
+ * @Description (English):
  * Given a positive integer n, find the next prime number after it.
  * 
- * 【输入 / Input】
- * 第一行包含一个整数 t：测试用例的数量。
- * 随后 t 行，每行包含一个正整数 n。
+ * @Description (Chinese):
+ * 给定一个正整数 n，找到严格大于 n 的最小素数。
+ * 
+ * @Input:
  * The first line has an integer t: the number of tests.
  * After that, each line has a positive integer n.
+ * 第一行包含一个整数 t：测试用例的数量。
+ * 随后 t 行，每行包含一个正整数 n。
  * 
- * 【输出 / Output】
- * 对于每个测试用例，打印出 n 之后的下一个素数。
+ * @Output:
  * For each test, print the next prime after n.
+ * 对于每个测试用例，打印出 n 之后的下一个素数。
  * 
- * 【数据范围 / Constraints】
+ * @Constraints:
  * 1 <= t <= 20
  * 1 <= n <= 10^12
  * 
- * 【时间 & 空间限制 / Limits】
- * Time limit: 1.00 s
- * Memory limit: 512 MB
+ * @Example:
+ * Input:
+ * 3
+ * 2
+ * 5
+ * 10
  * 
- * 【解题思路 / Solution Idea】
- * 1. 在 10^12 范围内，相邻素数的最大间隙极小（远低于 600）。
- * 2. 所以我们只需要从 n+1 开始向后逐个判断是否为素数，绝大部分非素数会瞬间被淘汰。
- * 3. 判定单个素数采用 O(√n) 的试除法。由于只需处理到 10^6，且所有素数必然满足 6k±1，
- *    我们可以直接跳过 2 和 3 的倍数，步长设为 6，极大降低常数项时间复杂度。
- * ==============================================================================
+ * Output:
+ * 3
+ * 7
+ * 11
+ * 
+ * @Algorithm:
+ * Prime Gap / Wheel Factorization (素数间隙 / 轮式因子分解试除法)
+ * 判定单个素数采用 O(√n) 的试除法。由于只需处理到 10^6，且所有素数必然满足 6k±1，
+ * 我们可以直接跳过 2 和 3 的倍数，步长设为 6，极大降低常数项时间复杂度。
  */
 
 
