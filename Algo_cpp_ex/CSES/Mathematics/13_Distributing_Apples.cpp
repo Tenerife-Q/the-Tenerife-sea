@@ -1,44 +1,38 @@
 /*
-🍏 Distributing Apples (分配苹果)
-
-English Description:
-There are n children and m apples that will be distributed to them. Your task is to count the number of ways this can be done.
-For example, if n = 3 and m = 2, there are 6 ways: [0,0,2], [0,1,1], [0,2,0], [1,0,1], [1,1,0], and [2,0,0].
-
-Input
-The only input line has two integers n and m.
-
-Output
-Print the number of ways modulo 10^9+7.
-
-Constraints
-1 <= n, m <= 10^6
-
-Example
-Input: 3 2
-Output: 6
-
-中文说明：
-有 n 个孩子和 m 个苹果，你需要将这些苹果分配给这些孩子。请计算有多少种不同的分配方式。
-例如，如果 n=3 且 m=2，有 6 种分配方式： [0,0,2]、[0,1,1]、[0,2,0]、[1,0,1]、[1,1,0]、[2,0,0]。
-
-输入
-唯一的一行包含两个整数 n 和 m。
-
-输出
-输出不同的分配方式总数对 10^9+7 取模的结果。
-
-数据范围
-1 <= n, m <= 10^6
-
-样例
-输入：3 2
-输出：6
-
-思路（简要）：
-使用“星与杠”组合公式：将 m 个不可区分的物品分配到 n 个容器，答案为组合数 C(n+m-1, n-1)。
-在模意义下通过预处理阶乘和逆元快速计算组合数。
-*/
+ * @Problem: Distributing Apples
+ * @Source: CSES - Mathematics
+ * 
+ * @Description (English):
+ * There are n children and m apples that will be distributed to them. Your task is to count the number of ways this can be done.
+ * For example, if n = 3 and m = 2, there are 6 ways: [0,0,2], [0,1,1], [0,2,0], [1,0,1], [1,1,0], and [2,0,0].
+ * 
+ * @Description (Chinese):
+ * 有 n 个孩子和 m 个苹果，你需要将这些苹果分配给这些孩子。请计算有多少种不同的分配方式。
+ * 例如如果 n=3 且 m=2，有 6 种方式： [0,0,2], [0,1,1], [0,2,0], [1,0,1], [1,1,0], 和 [2,0,0]。
+ * 
+ * @Input:
+ * The only input line has two integers n and m.
+ * 唯一的一行包含两个整数 n 和 m。
+ * 
+ * @Output:
+ * Print the number of ways modulo 10^9+7.
+ * 输出不同的分配方式总数对 10^9+7 取模的结果。
+ * 
+ * @Constraints:
+ * 1 <= n, m <= 10^6
+ * 
+ * @Example:
+ * Input: 
+ * 3 2
+ * 
+ * Output: 
+ * 6
+ * 
+ * @Algorithm:
+ * Stars and Bars / Combinatorics (星与杠模型 / 组合数学 / 重复组合)
+ * 将 m 个不可区分的物品放入 n 个不同的容器中，允许有空容器，方案数为 C(n+m-1, n-1)。
+ * 预处理出最大阶乘及逆元即可 O(N+M) 得出。
+ */
 
 // #include <iostream>
 // #include <vector>
